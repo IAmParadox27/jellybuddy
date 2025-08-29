@@ -1,0 +1,97 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
+		<TargetFrameworks Condition="'$(Configuration)' == 'Debug' And $([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+
+		<OutputType>Exe</OutputType>
+		<RootNamespace>Jellybuddy</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- Display name -->
+		<ApplicationTitle>Jellybuddy</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>dev.iamparadox.jellybuddy</ApplicationId>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>0.1</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+
+        <SyncfusionLicenseKey>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)\Syncfusion.Licensing.txt"))</SyncfusionLicenseKey>
+	</PropertyGroup>
+    
+    <Target Name="GenerateAssemblyMetadata" BeforeTargets="BeforeCompile">
+        <ItemGroup>
+            <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+                <_Parameter1>SyncfusionLicenseKey</_Parameter1>
+                <_Parameter2>$(SyncfusionLicenseKey)</_Parameter2>
+            </AssemblyAttribute>
+        </ItemGroup>
+        <WriteCodeFragment
+                Language="C#"
+                OutputFile="$(IntermediateOutputPath)AssemblyMetadata.g.cs"
+                AssemblyAttributes="@(AssemblyAttribute)" />
+        <ItemGroup>
+            <Compile Include="$(IntermediateOutputPath)AssemblyMetadata.g.cs" />
+        </ItemGroup>
+    </Target>
+
+	<ItemGroup>
+		<!-- App Icon -->
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+
+		<!-- Splash Screen -->
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+        <PackageReference Include="CommunityToolkit.Maui" Version="8.0.1" />
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+        <PackageReference Include="Microsoft.Maui.Graphics" Version="8.0.100" />
+        <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.9.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Oscore.Maui.Biometric" Version="1.0.1" />
+        <PackageReference Include="Syncfusion.Licensing" Version="30.2.7" />
+        <PackageReference Include="Syncfusion.Maui.Cards" Version="30.2.7" />
+        <PackageReference Include="Syncfusion.Maui.Charts" Version="30.2.7" />
+        <PackageReference Include="Syncfusion.Maui.Core" Version="30.2.7" />
+        <PackageReference Include="Syncfusion.Maui.DataForm" Version="30.2.7" />
+        <PackageReference Include="Syncfusion.Maui.Expander" Version="30.2.7" />
+        <PackageReference Include="Syncfusion.Maui.Popup" Version="30.2.7" />
+        <PackageReference Include="Syncfusion.Maui.PullToRefresh" Version="30.2.7" />
+	</ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\Jellybuddy.Core\Jellybuddy.Core.csproj" />
+    </ItemGroup>
+
+    <!-- Extra repo items for easy modification -->
+    <ItemGroup>
+        <None Include="Syncfusion.Licensing.txt" />
+        <None Include="..\..\README.md" />
+    </ItemGroup>
+</Project>
