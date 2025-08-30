@@ -13,3 +13,14 @@ A Jellyfin companion app for iOS and Android built in .NET Maui (because I don't
    1. You can find instructions on how to get a Syncfusion key here: https://help.syncfusion.com/common/essential-studio/licensing/how-to-generate
    2. The Jellybuddy csproj is configured to reference this file, so if you don't have it, it will be easy to create in the correct place.
    3. **You must not commit this file to the repo**
+
+
+
+## TODO LIST
+
+1. Ability to manage multiple servers
+2. See Active sessions, with playback state, the device playing, user and if it is direct or transcode, also there ability to send a message to that session
+3. Then comes the library tab, where you could look at the number of items in your library, and going into each one would just load a poster, and basic item details on more details
+4. Then Users tab, where you can create, edit/delete/modify a user, basically everything that is in the user page in the jellyfin web (allowing transcoding, library permission etc) also shows if the user is active or not.
+5. Them comes statistics, something like streamyfin/jellystats, number of movies in the libbrary, number of watched movies and also if possible per user stats. (nice looking graphs)
+6. More details - basically everything else in the jellyfin dashboard, plugins, scheduled tasks, devices, activity log, Alerts, etc
