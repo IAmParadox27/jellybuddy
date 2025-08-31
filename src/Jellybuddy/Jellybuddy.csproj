@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
+        <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('windows'))">net8.0-ios;</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">net8.0-android;net8.0-ios</TargetFrameworks>
 		<TargetFrameworks Condition="'$(Configuration)' == 'Debug' And $([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
 
 		<OutputType>Exe</OutputType>
@@ -26,7 +27,8 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 
-        <SyncfusionLicenseKey>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)\Syncfusion.Licensing.txt"))</SyncfusionLicenseKey>
+        <HasSyncfusionLicenseKey>$([System.IO.File]::Exists("$(MSBuildProjectDirectory)\Syncfusion.Licensing.txt"))</HasSyncfusionLicenseKey>
+        <SyncfusionLicenseKey Condition="$(HasSyncfusionLicenseKey)">$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)\Syncfusion.Licensing.txt"))</SyncfusionLicenseKey>
 	</PropertyGroup>
     
     <Target Name="GenerateAssemblyMetadata" BeforeTargets="BeforeCompile">

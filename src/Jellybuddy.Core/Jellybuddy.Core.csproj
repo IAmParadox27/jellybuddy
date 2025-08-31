@@ -1,10 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('windows'))">net8.0-ios;</TargetFrameworks>
+        <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">net8.0-android;net8.0-ios</TargetFrameworks>
+        <TargetFrameworks Condition="'$(Configuration)' == 'Debug' And $([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         
+        <HasJellyfinServerUrl>$([System.IO.File]::Exists("$(MSBuildProjectDirectory)\..\..\JellyfinServerUrl.txt"))</HasJellyfinServerUrl>
         <JellyfinServerUrl>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)\..\..\JellyfinServerUrl.txt"))</JellyfinServerUrl>
     </PropertyGroup>
 
