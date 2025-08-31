@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Jellybuddy.ViewModels
 {
-    public partial class ActiveSessionsViewModel : ObservableObject
+    public partial class ActiveSessionsViewModel : ObservableObject, IPageViewModel
     {
         [ObservableProperty]
         private ObservableCollection<ActiveSessionGroup> m_sessions = new ObservableCollection<ActiveSessionGroup>();
@@ -37,12 +37,9 @@ namespace Jellybuddy.ViewModels
 
             RefreshCommand = new AsyncRelayCommand(LoadSessionsAsync);
             
-            Task.Run(LoadSessionsAsync);
-
             m_refreshTimer = Application.Current!.Dispatcher.CreateTimer();
             m_refreshTimer.Interval = TimeSpan.FromSeconds(2);
-            m_refreshTimer.Tick += RefreshTimerOnTick; 
-            m_refreshTimer.Start();
+            m_refreshTimer.Tick += RefreshTimerOnTick;
         }
 
         private async void RefreshTimerOnTick(object? sender, EventArgs e)
@@ -102,10 +99,7 @@ namespace Jellybuddy.ViewModels
                 }
             }
 
-            if (isRefreshing)
-            {
-                IsRefreshing = false;
-            }
+            IsRefreshing = false;
         }
         
         private async Task GetSessionsForServerAsync(JellyfinServerConnection server)
@@ -167,6 +161,17 @@ namespace Jellybuddy.ViewModels
                 // Replace with removing server from list when multiple can be added
                 m_navigationManager.NavigateTo<LoginPage>();
             }
+        }
+
+        public void OnNavigatedTo()
+        {
+            IsRefreshing = true;
+            m_refreshTimer.Start();
+        }
+
+        public void OnNavigatedFrom()
+        {
+            m_refreshTimer.Stop();
         }
     }
 }
