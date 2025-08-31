@@ -5,10 +5,15 @@
              xmlns:tabPages="clr-namespace:Jellybuddy.Pages.TabPages"
              xmlns:pages="clr-namespace:Jellybuddy.Pages"
              xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
+             xmlns:icons="clr-namespace:MauiIcons.Material;assembly=MauiIcons.Material"
              x:Class="Jellybuddy.Pages.MainTabbedPage"
              x:DataType="viewModels:TabViewViewModel"
              CurrentPageChanged="MainTabbedPage_OnCurrentPageChanged">
-    <tabPages:DashboardTab Title="Dashboard" BindingContext="{Binding ActiveSessionsViewModel.Model}" />
+    <tabPages:DashboardTab Title="Dashboard" BindingContext="{Binding ActiveSessionsViewModel.Model}">
+        <tabPages:DashboardTab.IconImageSource>
+            <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Subscriptions}, IconColor=Black}" />
+        </tabPages:DashboardTab.IconImageSource>
+    </tabPages:DashboardTab>
     <tabPages:LibraryTab Title="Library" />
     <tabPages:UsersTab Title="Users" />
     <tabPages:StatsTab Title="Stats" />

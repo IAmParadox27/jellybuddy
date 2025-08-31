@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
              xmlns:converters="clr-namespace:Jellybuddy.Converters"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Jellybuddy.Controls.ActiveSessionCard"
              StrokeThickness="0" 
              BackgroundColor="#36343B" 
@@ -12,6 +13,7 @@
              StrokeShape="RoundRectangle 15"
              x:DataType="api:SessionInfoDto">
     <Border.Resources>
+        <toolkit:IsNullConverter x:Key="isNullConverter" />
         <converters:TicksToTimeConverter x:Key="ticksToTimeConverter" />
         <converters:SessionToProgressConverter x:Key="sessionToProgressConverter" />
         <converters:SessionToItemPosterConverter x:Key="sessionToItemProgressConverter" />
@@ -70,7 +72,45 @@
             </StackLayout>
             <StackLayout Orientation="Vertical" Grid.Column="1" Margin="0, 8">
                 <!-- <Entry Text="{Binding NowPlayingItem.SeriesId, Mode=OneWay}" /> -->
-                <Label Text="{Binding NowPlayingItem.OriginalTitle}" FontSize="18" FontAttributes="Bold" TextColor="#E4DFE3" />
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Title" FontSize="18" FontAttributes="Bold" TextColor="#E4DFE3">
+                        <Label.Style>
+                            <Style TargetType="Label">
+                                <Style.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding NowPlayingItem.OriginalTitle, Converter={StaticResource isNullConverter}}" Value="False">
+                                        <Setter Property="Text" Value="{Binding NowPlayingItem.OriginalTitle}" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Label" Binding="{Binding NowPlayingItem.SeriesName, Converter={StaticResource isNullConverter}}" Value="False">
+                                        <Setter Property="Text" Value="{Binding NowPlayingItem.SeriesName}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                    <StackLayout Orientation="Horizontal" IsVisible="False">
+                        <StackLayout.Style>
+                            <Style TargetType="StackLayout">
+                                <Style.Triggers>
+                                    <DataTrigger TargetType="StackLayout" Binding="{Binding NowPlayingItem.Type}" Value="{x:Static api:BaseItemDtoType.Episode}">
+                                        <Setter Property="IsVisible" Value="True" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackLayout.Style>
+                        <Label Text="•" Margin="10, 0" />
+                        <Label Text="" FontSize="18" FontAttributes="Bold" TextColor="#E4DFE3">
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding NowPlayingItem.EpisodeTitle, Converter={StaticResource isNullConverter}}" Value="False">
+                                            <Setter Property="Text" Value="{Binding NowPlayingItem.EpisodeTitle}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                    </StackLayout>
+                </StackLayout>
                 <StackLayout Orientation="Horizontal" Spacing="6" Margin="0, 5">
                     <Border StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="#49454F" Padding="6, 2">
                         <Label Text="1080p" FontAttributes="Bold" TextColor="#C9C3CF" />
