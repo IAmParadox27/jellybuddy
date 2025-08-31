@@ -80,7 +80,7 @@ namespace Jellybuddy.ViewModels
                     accessToken = json?["AccessToken"]?.GetValue<string>();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 _ = 12;
             }
@@ -123,7 +123,7 @@ namespace Jellybuddy.ViewModels
                         m_dataCache.Data.Servers.Add(cachedServerConnection);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     _ = 12;
                     
@@ -148,7 +148,7 @@ namespace Jellybuddy.ViewModels
             {
                 storedServerConnectionsJson = await SecureStorage.Default.GetAsync("server_connections");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 _ = 12;
                     

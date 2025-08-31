@@ -2,7 +2,7 @@
 {
     public class JellyfinAuthRequest
     {
-        public string Username { get; set; }
-        public string Pw { get; set; }
+        public required string Username { get; set; }
+        public required string Pw { get; set; }
     }
 }
