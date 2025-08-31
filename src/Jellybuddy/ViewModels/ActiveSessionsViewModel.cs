@@ -28,6 +28,7 @@ namespace Jellybuddy.ViewModels
         
         private readonly IModel<DataCache> m_model;
         private readonly INavigationManager m_navigationManager;
+        private readonly IDispatcherTimer m_refreshTimer;
 
         public ActiveSessionsViewModel(IModel<DataCache> model, INavigationManager navigationManager)
         {
@@ -37,16 +38,21 @@ namespace Jellybuddy.ViewModels
             RefreshCommand = new AsyncRelayCommand(LoadSessionsAsync);
             
             Task.Run(LoadSessionsAsync);
-            Task.Run(RefreshTimer);
+
+            m_refreshTimer = Application.Current!.Dispatcher.CreateTimer();
+            m_refreshTimer.Interval = TimeSpan.FromSeconds(2);
+            m_refreshTimer.Tick += RefreshTimerOnTick; 
+            m_refreshTimer.Start();
         }
 
-        private async Task RefreshTimer()
+        private async void RefreshTimerOnTick(object? sender, EventArgs e)
         {
-            while (true)
+            try
             {
-                await Task.Delay(TimeSpan.FromSeconds(2));
-                
                 await LoadSessionsAsync(false);
+            }
+            catch
+            {
             }
         }
 
@@ -68,7 +74,7 @@ namespace Jellybuddy.ViewModels
                 {
                     await GetSessionsForServerAsync(serverConnection);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     _ = 12;
                 }
@@ -104,6 +110,11 @@ namespace Jellybuddy.ViewModels
         
         private async Task GetSessionsForServerAsync(JellyfinServerConnection server)
         {
+            if (server.Url == null)
+            {
+                return;
+            }
+            
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(server.Url);
             client.DefaultRequestHeaders.Add("X-Emby-Authorization", 
@@ -114,7 +125,7 @@ namespace Jellybuddy.ViewModels
 
             if (response.IsSuccessStatusCode)
             {
-                string? responseJson = await response.Content.ReadAsStringAsync();
+                string responseJson = await response.Content.ReadAsStringAsync();
                 
                 SessionInfoDto[]? sessions = JArray.Parse(responseJson).ToObject<SessionInfoDto[]>();
 

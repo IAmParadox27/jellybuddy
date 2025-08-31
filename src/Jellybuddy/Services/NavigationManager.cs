@@ -13,7 +13,7 @@ namespace Jellybuddy.Services
         
         public void NavigateTo<T>() where T : Page
         {
-            Application.Current.MainPage = ActivatorUtilities.CreateInstance<T>(m_serviceProvider);
+            Application.Current!.MainPage = ActivatorUtilities.CreateInstance<T>(m_serviceProvider);
         }
 
         public void NavigateTo<TView, TViewModel>() where TView : Page where TViewModel : class
@@ -21,7 +21,7 @@ namespace Jellybuddy.Services
             TView view = ActivatorUtilities.CreateInstance<TView>(m_serviceProvider);
             view.BindingContext = m_serviceProvider.GetRequiredService<IViewModel<TViewModel>>().Model;
 
-            Application.Current.MainPage = view;
+            Application.Current!.MainPage = view;
         }
     }
 }
