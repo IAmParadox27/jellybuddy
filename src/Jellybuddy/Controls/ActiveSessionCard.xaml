@@ -34,7 +34,6 @@
             <StackLayout Orientation="Vertical" Margin="10,0,20,5">
                 <Border BackgroundColor="#49454F" StrokeShape="RoundRectangle 10 10 0 0" StrokeThickness="0" HeightRequest="107" WidthRequest="72">
                     <Grid>
-                        <!-- https://image.tmdb.org/t/p/w600_and_h900_bestv2/w2ARwtc1zoh0pyfwmyhpZHwuXgK.jpg -->
                         <Image Source="{Binding Converter={StaticResource sessionToItemProgressConverter}}" Aspect="AspectFill" />
                         <Border StrokeThickness="0" BackgroundColor="#55000000" />
                     </Grid>
@@ -50,7 +49,23 @@
                         </Style>
                     </Border.Style>
                     <Label FontSize="10" VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" HorizontalTextAlignment="Center" 
-                           Text="{Binding PlayState.PlayMethod}" TextTransform="Uppercase" FontAttributes="Bold" CharacterSpacing="1" TextColor="White" />
+                           TextTransform="Uppercase" FontAttributes="Bold" CharacterSpacing="1" TextColor="White">
+                        <Label.Style>
+                            <Style TargetType="Label">
+                                <Style.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding PlayState.PlayMethod}" Value="{x:Static api:PlayerStateInfoPlayMethod.Transcode}">
+                                        <Setter Property="Text" Value="Transcode" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Label" Binding="{Binding PlayState.PlayMethod}" Value="{x:Static api:PlayerStateInfoPlayMethod.DirectPlay}">
+                                        <Setter Property="Text" Value="Direct" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Label" Binding="{Binding PlayState.PlayMethod}" Value="{x:Static api:PlayerStateInfoPlayMethod.DirectStream}">
+                                        <Setter Property="Text" Value="Direct" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
                 </Border>
             </StackLayout>
             <StackLayout Orientation="Vertical" Grid.Column="1" Margin="0, 8">
@@ -70,10 +85,7 @@
                         <Label Text="MKV" FontAttributes="Bold" TextColor="#C9C3CF" />
                     </Border>
                 </StackLayout>
-                <Grid ColumnDefinitions="Auto, 5, *" RowDefinitions="Auto,Auto" Margin="0, 10">
-                    <!-- <Border WidthRequest="200" StrokeShape="RoundRectangle 2.5" HeightRequest="5" StrokeThickness="0" BackgroundColor="#8775BB" /> -->
-                    <!-- <Border Grid.Column="2" StrokeShape="RoundRectangle 2.5" HeightRequest="5" StrokeThickness="0" BackgroundColor="#4A4458" /> -->
-                    
+                <Grid ColumnDefinitions="*, 5, *" RowDefinitions="Auto,Auto" Margin="0, 10">
                     <ProgressBar Progress="{Binding Converter={StaticResource sessionToProgressConverter}}" Grid.ColumnSpan="3" ProgressColor="#8775BB" Margin="0" />
                     
                     <Label FontSize="10" Text="{Binding PlayState.PositionTicks, Converter={StaticResource ticksToTimeConverter}}" Grid.Row="1" TextColor="#B9B3BE" FontAttributes="Bold" Margin="0, 2" />
