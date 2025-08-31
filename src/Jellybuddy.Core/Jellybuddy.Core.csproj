@@ -27,12 +27,31 @@
     <PropertyGroup>
         <ShouldGenerateJellyfinApi>$([System.IO.File]::Exists("$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs"))</ShouldGenerateJellyfinApi>
     </PropertyGroup>
+
+
+    <Target Name="GenerateAssemblyMetadata" BeforeTargets="BeforeCompile">
+        <ItemGroup>
+            <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+                <_Parameter1>JellyfinServerUrl</_Parameter1>
+                <_Parameter2>$(JellyfinServerUrl)</_Parameter2>
+            </AssemblyAttribute>
+        </ItemGroup>
+        <WriteCodeFragment
+                Language="C#"
+                OutputFile="$(IntermediateOutputPath)AssemblyMetadata.g.cs"
+                AssemblyAttributes="@(AssemblyAttribute)" />
+        <ItemGroup>
+            <Compile Include="$(IntermediateOutputPath)AssemblyMetadata.g.cs" />
+        </ItemGroup>
+    </Target>
+
+
     <Target Condition="!$(ShouldGenerateJellyfinApi)"
             Name="GenerateJellyfinApiModels" 
             BeforeTargets="CoreCompile" 
             Inputs="$(JellyfinServerUrl)" 
             Outputs="$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs">
-        <Exec Command="$(NSwagExe) openapi2csclient /input:$(JellyfinServerUrl)/api-docs/openapi.json /classname:Models /namespace:Jellyfin.Api /output:$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs /GenerateDtoTypes:true /GenerateClientClasses:false" ConsoleToMsBuild="true" />
+        <Exec Command="$(NSwagExe) openapi2csclient /input:$(JellyfinServerUrl)/api-docs/openapi.json /classname:Models /namespace:Jellyfin.Api /output:$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs /GenerateDtoTypes:true /GenerateClientClasses:false /classstyle:inpc" ConsoleToMsBuild="true" />
     </Target>
     <Target Name="ForceReGenerationOnRebuild" AfterTargets="CoreClean">
         <Delete Files="$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs" />

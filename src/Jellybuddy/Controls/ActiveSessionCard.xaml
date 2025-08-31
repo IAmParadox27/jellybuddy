@@ -3,6 +3,7 @@
 <Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
+             xmlns:converters="clr-namespace:Jellybuddy.Converters"
              x:Class="Jellybuddy.Controls.ActiveSessionCard"
              StrokeThickness="0" 
              BackgroundColor="#36343B" 
@@ -10,6 +11,11 @@
              Margin="5" 
              StrokeShape="RoundRectangle 15"
              x:DataType="api:SessionInfoDto">
+    <Border.Resources>
+        <converters:TicksToTimeConverter x:Key="ticksToTimeConverter" />
+        <converters:SessionToProgressConverter x:Key="sessionToProgressConverter" />
+        <converters:SessionToItemPosterConverter x:Key="sessionToItemProgressConverter" />
+    </Border.Resources>
     <StackLayout Orientation="Vertical">
         <Grid ColumnDefinitions="Auto,*,Auto">
             <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="50" WidthRequest="50" BackgroundColor="#8674BB" />
@@ -19,25 +25,37 @@
             <Border StrokeThickness="0" Grid.Column="0" HorizontalOptions="End" VerticalOptions="End" Margin="10, 15" StrokeShape="RoundRectangle 6" HeightRequest="12" WidthRequest="12" BackgroundColor="#4CAF50" />
             
             <StackLayout Orientation="Vertical" Grid.Column="1" Margin="10">
-                <Label Text="IAmParadox27" FontAttributes="Bold" TextColor="#E4DFE3" />
-                <Label Text="Pixel 7" TextColor="#B1ABB6" />
-                <Label Text="JellyBuddy" TextColor="#B1ABB6" />
+                <Label Text="{Binding UserName}" FontAttributes="Bold" TextColor="#E4DFE3" />
+                <Label Text="{Binding DeviceName}" TextColor="#B1ABB6" />
+                <Label Text="{Binding Client}" TextColor="#B1ABB6" />
             </StackLayout>
         </Grid>
         <Grid ColumnDefinitions="Auto,*" Margin="10">
             <StackLayout Orientation="Vertical" Margin="10,0,20,5">
                 <Border BackgroundColor="#49454F" StrokeShape="RoundRectangle 10 10 0 0" StrokeThickness="0" HeightRequest="107" WidthRequest="72">
                     <Grid>
-                        <Image Source="https://image.tmdb.org/t/p/w600_and_h900_bestv2/w2ARwtc1zoh0pyfwmyhpZHwuXgK.jpg" Aspect="AspectFill" />
+                        <!-- https://image.tmdb.org/t/p/w600_and_h900_bestv2/w2ARwtc1zoh0pyfwmyhpZHwuXgK.jpg -->
+                        <Image Source="{Binding Converter={StaticResource sessionToItemProgressConverter}}" Aspect="AspectFill" />
                         <Border StrokeThickness="0" BackgroundColor="#55000000" />
                     </Grid>
                 </Border>
                 <Border BackgroundColor="#4CA550" StrokeShape="RoundRectangle 0 0 10 10" StrokeThickness="0" HeightRequest="20" WidthRequest="72">
-                    <Label FontSize="12" VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" HorizontalTextAlignment="Center" Text="Direct" TextTransform="Uppercase" FontAttributes="Bold" CharacterSpacing="1.5" TextColor="White" />
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding PlayState.PlayMethod}" Value="{x:Static api:PlayerStateInfoPlayMethod.Transcode}">
+                                    <Setter Property="BackgroundColor" Value="#ED9008" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Label FontSize="10" VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" HorizontalTextAlignment="Center" 
+                           Text="{Binding PlayState.PlayMethod}" TextTransform="Uppercase" FontAttributes="Bold" CharacterSpacing="1" TextColor="White" />
                 </Border>
             </StackLayout>
             <StackLayout Orientation="Vertical" Grid.Column="1" Margin="0, 8">
-                <Label Text="Elio" FontSize="18" FontAttributes="Bold" TextColor="#E4DFE3" />
+                <!-- <Entry Text="{Binding NowPlayingItem.SeriesId, Mode=OneWay}" /> -->
+                <Label Text="{Binding NowPlayingItem.OriginalTitle}" FontSize="18" FontAttributes="Bold" TextColor="#E4DFE3" />
                 <StackLayout Orientation="Horizontal" Spacing="6" Margin="0, 5">
                     <Border StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="#49454F" Padding="6, 2">
                         <Label Text="1080p" FontAttributes="Bold" TextColor="#C9C3CF" />
@@ -53,10 +71,13 @@
                     </Border>
                 </StackLayout>
                 <Grid ColumnDefinitions="Auto, 5, *" RowDefinitions="Auto,Auto" Margin="0, 10">
-                    <Border WidthRequest="50" StrokeShape="RoundRectangle 2.5" HeightRequest="5" StrokeThickness="0" BackgroundColor="#8775BB" />
-                    <Border Grid.Column="2" StrokeShape="RoundRectangle 2.5" HeightRequest="5" StrokeThickness="0" BackgroundColor="#4A4458" />
-                    <Label FontSize="10" Text="11:57" Grid.Row="1" TextColor="#B9B3BE" FontAttributes="Bold" Margin="0, 2" />
-                    <Label FontSize="10" Text="1:26:47" Grid.Row="1" Grid.Column="2" HorizontalOptions="End" TextColor="#B9B3BE" FontAttributes="Bold" Margin="0, 2" />
+                    <!-- <Border WidthRequest="200" StrokeShape="RoundRectangle 2.5" HeightRequest="5" StrokeThickness="0" BackgroundColor="#8775BB" /> -->
+                    <!-- <Border Grid.Column="2" StrokeShape="RoundRectangle 2.5" HeightRequest="5" StrokeThickness="0" BackgroundColor="#4A4458" /> -->
+                    
+                    <ProgressBar Progress="{Binding Converter={StaticResource sessionToProgressConverter}}" Grid.ColumnSpan="3" ProgressColor="#8775BB" Margin="0" />
+                    
+                    <Label FontSize="10" Text="{Binding PlayState.PositionTicks, Converter={StaticResource ticksToTimeConverter}}" Grid.Row="1" TextColor="#B9B3BE" FontAttributes="Bold" Margin="0, 2" />
+                    <Label FontSize="10" Text="{Binding NowPlayingItem.RunTimeTicks, Converter={StaticResource ticksToTimeConverter}}" Grid.Row="1" Grid.Column="2" HorizontalOptions="End" TextColor="#B9B3BE" FontAttributes="Bold" Margin="0, 2" />
                 </Grid>
             </StackLayout>
         </Grid>

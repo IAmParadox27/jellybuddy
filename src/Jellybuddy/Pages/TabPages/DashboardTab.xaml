@@ -9,30 +9,31 @@
              xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
              xmlns:models="clr-namespace:Jellybuddy.Models"
              xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
+             xmlns:converters="clr-namespace:Jellybuddy.Converters"
              x:Class="Jellybuddy.Pages.TabPages.DashboardTab" BackgroundColor="#1C1B1F"
              x:DataType="viewModels:ActiveSessionsViewModel">
     <ContentPage.Content>
-        <pullToRefresh:SfPullToRefresh>
+        <pullToRefresh:SfPullToRefresh RefreshCommand="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
             <pullToRefresh:SfPullToRefresh.PullableContent>
                 <ScrollView>
-                    <ListView IsGroupingEnabled="True" ItemsSource="{Binding Sessions}">
-                        <ListView.GroupHeaderTemplate>
-                            <DataTemplate x:DataType="models:ActiveSessionGroup">
-                                <StackLayout>
-                                    <Label Text="{Binding Name}" VerticalOptions="CenterAndExpand"
-                                           TextColor="Black"
-                                           BackgroundColor="LightGray"
-                                           FontSize="20"
-                                           FontAttributes="Bold" />
-                                </StackLayout>
-                            </DataTemplate>
-                        </ListView.GroupHeaderTemplate>
-                        <ListView.ItemTemplate>
+                    <CollectionView ItemsSource="{Binding AllSessions}">
+                        <!-- <ListView.GroupHeaderTemplate> -->
+                        <!--     <DataTemplate x:DataType="models:ActiveSessionGroup"> -->
+                        <!--         <StackLayout> -->
+                        <!--             <Label Text="{Binding Name}" VerticalOptions="CenterAndExpand" -->
+                        <!--                    TextColor="Black" -->
+                        <!--                    BackgroundColor="LightGray" -->
+                        <!--                    FontSize="20" -->
+                        <!--                    FontAttributes="Bold" /> -->
+                        <!--         </StackLayout> -->
+                        <!--     </DataTemplate> -->
+                        <!-- </ListView.GroupHeaderTemplate> -->
+                        <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="api:SessionInfoDto">
                                 <controls:ActiveSessionCard BindingContext="{Binding}" />
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
                     <!-- <FlexLayout AlignContent="Start" Direction="Row" FlowDirection="LeftToRight" AlignItems="Center" Wrap="Wrap"> -->
                     <!--     <controls:ActiveSessionCard /> -->
                     <!--     <controls:ActiveSessionCard /> -->

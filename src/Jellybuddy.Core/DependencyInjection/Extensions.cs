@@ -1,4 +1,5 @@
-﻿using Jellybuddy.Core.DependencyInjection.Internal;
+﻿using System.Reflection;
+using Jellybuddy.Core.DependencyInjection.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Hosting;
 
@@ -12,6 +13,14 @@ namespace Jellybuddy.Core.DependencyInjection
             builder.Services.AddSingleton(typeof(IModel<>), typeof(Model<>));
             
             return builder;
+        }
+        
+        public static void CopyValues<T>(this T input, ref T output)
+        {
+            foreach (PropertyInfo property in typeof(T).GetProperties())
+            {
+                property.SetValue(output, property.GetValue(input));
+            }
         }
     }
 }
