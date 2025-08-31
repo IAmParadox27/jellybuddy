@@ -4,6 +4,37 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        
+        <JellyfinServerUrl>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)\..\..\JellyfinServerUrl.txt"))</JellyfinServerUrl>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+      <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="8.0.19">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+      <PackageReference Include="Microsoft.Maui.Core" Version="8.0.100" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="NSwag.MSBuild" Version="14.5.0" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Include="..\..\JellyfinServerUrl.txt" />
+    </ItemGroup>
+    
+    <PropertyGroup>
+        <ShouldGenerateJellyfinApi>$([System.IO.File]::Exists("$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs"))</ShouldGenerateJellyfinApi>
+    </PropertyGroup>
+    <Target Condition="!$(ShouldGenerateJellyfinApi)"
+            Name="GenerateJellyfinApiModels" 
+            BeforeTargets="CoreCompile" 
+            Inputs="$(JellyfinServerUrl)" 
+            Outputs="$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs">
+        <Exec Command="$(NSwagExe) openapi2csclient /input:$(JellyfinServerUrl)/api-docs/openapi.json /classname:Models /namespace:Jellyfin.Api /output:$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs /GenerateDtoTypes:true /GenerateClientClasses:false" ConsoleToMsBuild="true" />
+    </Target>
+    <Target Name="ForceReGenerationOnRebuild" AfterTargets="CoreClean">
+        <Delete Files="$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs" />
+    </Target>
 </Project>

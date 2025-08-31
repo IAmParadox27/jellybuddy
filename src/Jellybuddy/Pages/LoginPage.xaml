@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dataForm="clr-namespace:Syncfusion.Maui.DataForm;assembly=Syncfusion.Maui.DataForm"
+             xmlns:popup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
+             xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
+             x:Class="Jellybuddy.LoginPage"
+             BackgroundColor="#1C1B1F"
+             x:DataType="viewModels:LoginFormViewModel">
+
+    <ContentPage.Resources>
+        <Color x:Key="ButtonForegroundLight">#FFFFFF</Color>
+        <Color x:Key="ButtonForegroundDark">#381E72</Color>
+    </ContentPage.Resources>
+    
+    <Grid RowDefinitions="0.2*,0.8*" ColumnDefinitions="*,Auto,*">
+        <!-- Add the logo here in Grid.Row="" -->
+        <Border BackgroundColor="{DynamicResource SfDataFormNormalBackground}"
+                VerticalOptions="Center"
+                MaximumWidthRequest="{OnPlatform WinUI=380, MacCatalyst=400, Android=380}"
+                HorizontalOptions="{OnPlatform WinUI=Start, MacCatalyst=Start, Default=Fill}" Margin="0"
+                Grid.Row="1" Grid.Column="1">
+            <Border.Padding>
+                <OnPlatform x:TypeArguments="Thickness">
+                    <On Platform="MacCatalyst" Value="32, 20, 32, 32"/>
+                    <On Platform="WinUI" Value="32, 20, 32, 32"/>
+                    <On Platform="WinUI" Value="32, 20, 32, 32"/>
+                </OnPlatform>
+            </Border.Padding>
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="20" />
+            </Border.StrokeShape>
+
+            <Grid BackgroundColor="#36343B">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="{OnPlatform Default=40, MacCatalyst=60, WinUI=60}"/>
+                    <RowDefinition Height="{OnPlatform Default=300, WinUI=170}"/>
+                    <RowDefinition Height="1"/>
+                    <RowDefinition Height="{OnPlatform Default=80, MacCatalyst=60, WinUI=60}"/>
+                </Grid.RowDefinitions>
+                <Label Text="Sign in" TextColor="#E6E1E5" FontSize="Title"
+                    FontAttributes="Bold" 
+                   VerticalOptions="Center" VerticalTextAlignment="Center"
+                   HorizontalOptions="Center" HorizontalTextAlignment="Center">
+                <Label.Margin>
+                    <OnPlatform x:TypeArguments="Thickness">
+                        <On Platform="WinUI" Value="20, 0"/>
+                        <On Platform="MacCatalyst" Value="20, 0"/>
+                    </OnPlatform>
+                </Label.Margin>
+            </Label>
+            
+            <HorizontalStackLayout Grid.Row="1"  HorizontalOptions="Center" >
+                <Image Aspect="AspectFit" Margin="20, 10" WidthRequest="{OnPlatform Default=50, WinUI=50, MacCatalyst=40}"  />
+                <Image Aspect="AspectFit" Margin="20, 10" WidthRequest="{OnPlatform Default=50, WinUI=50, MacCatalyst=40}" />
+                <Image Aspect="AspectFit" Margin="20, 10" WidthRequest="{OnPlatform Default=50, WinUI=50, MacCatalyst=40}"  />
+            </HorizontalStackLayout>
+            <dataForm:SfDataForm BackgroundColor="#36343B" x:Name="signInForm" Grid.Row="2" DataObject="{Binding Model}" MinimumHeightRequest="{OnPlatform WinUI=100}"
+                             LayoutType="TextInputLayout"
+                             ValidationMode="PropertyChanged" 
+                             AutoGenerateItems="True">
+                <dataForm:SfDataForm.TextInputLayoutSettings>
+                        <dataForm:TextInputLayoutSettings ShowHelperText="True"
+                                                      FocusedStroke="{DynamicResource SfDataFormFocusedEditorStroke}" Stroke="#E6E1E5">
+                            <dataForm:TextInputLayoutSettings.HelperTextStyle>
+                                <dataForm:DataFormTextStyle TextColor="#E6E1E5" />
+                            </dataForm:TextInputLayoutSettings.HelperTextStyle>
+                        </dataForm:TextInputLayoutSettings>
+                </dataForm:SfDataForm.TextInputLayoutSettings>
+            </dataForm:SfDataForm>
+            <Button Text="Sign In" x:Name="signInButton" HeightRequest="40" VerticalOptions="Center"
+                    HorizontalOptions="Fill" Margin="20,10" CornerRadius="20"
+                    Command="{Binding SignInCommand}"
+                    FontSize="16" Padding="0" TextColor="{AppThemeBinding Light={StaticResource ButtonForegroundLight}, Dark={StaticResource ButtonForegroundDark}}"
+                    Grid.Row="4" Background="{DynamicResource SfDataFormFocusedEditorStroke}"/>
+
+                <popup:SfPopup Grid.Row="0" Grid.RowSpan="3" IsVisible="false" x:Name="popup" FooterHeight="80" ShowHeader="False" ShowFooter="True" HeightRequest="200">
+                    <popup:SfPopup.PopupStyle>
+                        <popup:PopupStyle CornerRadius="15" MessageFontSize="16" />
+                    </popup:SfPopup.PopupStyle>
+                </popup:SfPopup>
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>

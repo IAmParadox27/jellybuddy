@@ -1,6 +1,10 @@
 ﻿using System.Reflection;
 using CommunityToolkit.Maui;
+using Jellybuddy.Core.DependencyInjection;
+using Jellybuddy.Services;
+using Maui.Biometric;
 using Microsoft.Extensions.Logging;
+using Syncfusion.Maui.Core.Hosting;
 
 namespace Jellybuddy
 {
@@ -18,11 +22,16 @@ namespace Jellybuddy
 			builder
 				.UseMauiApp<App>()
 				.UseMauiCommunityToolkit()
+				.UseBiometricAuthentication()
+				.UseViewModels()
+				.ConfigureSyncfusionCore()
 				.ConfigureFonts(fonts =>
 				{
 					fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 					fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 				});
+
+			builder.Services.AddSingleton<INavigationManager, NavigationManager>();
 
 #if DEBUG
 			builder.Logging.AddDebug();

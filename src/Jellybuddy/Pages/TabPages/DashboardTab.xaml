@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:cards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
+             xmlns:pullToRefresh="clr-namespace:Syncfusion.Maui.PullToRefresh;assembly=Syncfusion.Maui.PullToRefresh"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:controls="clr-namespace:Jellybuddy.Controls"
+             xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
+             xmlns:models="clr-namespace:Jellybuddy.Models"
+             xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
+             x:Class="Jellybuddy.Pages.TabPages.DashboardTab" BackgroundColor="#1C1B1F"
+             x:DataType="viewModels:ActiveSessionsViewModel">
+    <ContentPage.Content>
+        <pullToRefresh:SfPullToRefresh>
+            <pullToRefresh:SfPullToRefresh.PullableContent>
+                <ScrollView>
+                    <ListView IsGroupingEnabled="True" ItemsSource="{Binding Sessions}">
+                        <ListView.GroupHeaderTemplate>
+                            <DataTemplate x:DataType="models:ActiveSessionGroup">
+                                <StackLayout>
+                                    <Label Text="{Binding Name}" VerticalOptions="CenterAndExpand"
+                                           TextColor="Black"
+                                           BackgroundColor="LightGray"
+                                           FontSize="20"
+                                           FontAttributes="Bold" />
+                                </StackLayout>
+                            </DataTemplate>
+                        </ListView.GroupHeaderTemplate>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="api:SessionInfoDto">
+                                <controls:ActiveSessionCard BindingContext="{Binding}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <!-- <FlexLayout AlignContent="Start" Direction="Row" FlowDirection="LeftToRight" AlignItems="Center" Wrap="Wrap"> -->
+                    <!--     <controls:ActiveSessionCard /> -->
+                    <!--     <controls:ActiveSessionCard /> -->
+                    <!--     <controls:ActiveSessionCard /> -->
+                    <!--     <controls:ActiveSessionCard /> -->
+                    <!--     <controls:ActiveSessionCard /> -->
+                    <!--     <controls:ActiveSessionCard /> -->
+                    <!-- </FlexLayout> -->
+                </ScrollView>
+            </pullToRefresh:SfPullToRefresh.PullableContent>
+        </pullToRefresh:SfPullToRefresh>
+    </ContentPage.Content>
+</ContentPage>

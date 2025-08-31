@@ -93,5 +93,17 @@
     <ItemGroup>
         <None Include="Syncfusion.Licensing.txt" />
         <None Include="..\..\README.md" />
+        <None Include="..\..\.gitignore" />
+    </ItemGroup>
+    <ItemGroup>
+      <MauiXaml Update="Pages\LoginPage.xaml">
+        <SubType>Designer</SubType>
+      </MauiXaml>
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Pages\LoginPage.xaml.cs">
+        <DependentUpon>MainPage.xaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

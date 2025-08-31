@@ -137,4 +137,7 @@ _NCrunch*
 .idea/
 
 Syncfusion.Licensing.txt
+JellyfinServerUrl.txt
+*.g.cs
+jellyfin-openapi.json
 # End Jellybuddy additions
