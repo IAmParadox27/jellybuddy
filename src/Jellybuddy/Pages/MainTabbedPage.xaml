@@ -4,8 +4,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:tabPages="clr-namespace:Jellybuddy.Pages.TabPages"
              xmlns:pages="clr-namespace:Jellybuddy.Pages"
+             xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
              x:Class="Jellybuddy.Pages.MainTabbedPage"
-             x:DataType="pages:MainTabbedPage">
+             x:DataType="viewModels:TabViewViewModel"
+             CurrentPageChanged="MainTabbedPage_OnCurrentPageChanged">
     <tabPages:DashboardTab Title="Dashboard" BindingContext="{Binding ActiveSessionsViewModel.Model}" />
     <tabPages:LibraryTab Title="Library" />
     <tabPages:UsersTab Title="Users" />

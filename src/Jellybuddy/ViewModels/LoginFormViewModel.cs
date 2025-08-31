@@ -41,6 +41,9 @@ namespace Jellybuddy.ViewModels
                     m_dataCache.Data.Servers.Clear();
                     foreach (JellyfinServerConnection serverConnection in serverConnections)
                     {
+                        // Probably want to reauth with the server here.
+                        serverConnection.AccessToken = await AuthenticateWithServer(serverConnection);
+                        
                         m_dataCache.Data.Servers.Add(serverConnection);
                     }
                     
@@ -58,32 +61,12 @@ namespace Jellybuddy.ViewModels
                 $"MediaBrowser Client=\"JellyBuddy\", Device=\"MyDeviceName\", DeviceId=\"a7037817ace34ddc9d82385c63ac5f33\", Version=\"1.0.0\"");
             httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
             
-            string requestJson = JsonSerializer.Serialize(new JellyfinAuthRequest
+            string? accessToken = await AuthenticateWithServer(new JellyfinServerConnection()
             {
-                Username = Model.Username!,
-                Pw = Model.Password!
+                Url = Model.ServerUrl,
+                Username = Model.Username,
+                Password = Model.Password
             });
-            
-            StringContent content = new StringContent(requestJson, Encoding.UTF8, "application/json");
-
-            string? accessToken = null;
-            try
-            {
-                HttpResponseMessage response = await httpClient.PostAsync($"{Model.ServerUrl}/Users/AuthenticateByName", content);
-
-                // Get token
-                if (response.IsSuccessStatusCode)
-                {
-                    string? responseJson = await response.Content.ReadAsStringAsync();
-                    JsonNode? json = JsonNode.Parse(responseJson);
-
-                    accessToken = json?["AccessToken"]?.GetValue<string>();
-                }
-            }
-            catch (Exception)
-            {
-                _ = 12;
-            }
             
             if (accessToken != null)
             {
@@ -163,6 +146,43 @@ namespace Jellybuddy.ViewModels
             }
             
             return cachedServerConnections;
+        }
+
+        private async Task<string?> AuthenticateWithServer(JellyfinServerConnection serverConnection)
+        {
+            string requestJson = JsonSerializer.Serialize(new JellyfinAuthRequest
+            {
+                Username = serverConnection.Username!,
+                Pw = serverConnection.Password!
+            });
+            
+            StringContent content = new StringContent(requestJson, Encoding.UTF8, "application/json");
+
+            HttpClient httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("X-Emby-Authorization", 
+                $"MediaBrowser Client=\"JellyBuddy\", Device=\"MyDeviceName\", DeviceId=\"a7037817ace34ddc9d82385c63ac5f33\", Version=\"1.0.0\"");
+            httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
+            
+            string? accessToken = null;
+            try
+            {
+                HttpResponseMessage response = await httpClient.PostAsync($"{Model.ServerUrl}/Users/AuthenticateByName", content);
+
+                // Get token
+                if (response.IsSuccessStatusCode)
+                {
+                    string? responseJson = await response.Content.ReadAsStringAsync();
+                    JsonNode? json = JsonNode.Parse(responseJson);
+
+                    accessToken = json?["AccessToken"]?.GetValue<string>();
+                }
+            }
+            catch (Exception)
+            {
+                _ = 12;
+            }
+            
+            return accessToken;
         }
     }
 }

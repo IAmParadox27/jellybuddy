@@ -10,14 +10,19 @@ namespace Jellybuddy.Pages
 {
     public partial class MainTabbedPage
     {
-        public IViewModel<ActiveSessionsViewModel> ActiveSessionsViewModel { get; }
+        private IViewModel<TabViewViewModel> m_viewModel;
         
-        public MainTabbedPage(IViewModel<ActiveSessionsViewModel> activeSessionsViewModel)
+        public MainTabbedPage(IViewModel<TabViewViewModel> tabViewViewModel)
         {
-            BindingContext = this;
-            ActiveSessionsViewModel = activeSessionsViewModel;
+            m_viewModel = tabViewViewModel;
+            BindingContext = m_viewModel.Model;
             
             InitializeComponent();
+        }
+
+        private void MainTabbedPage_OnCurrentPageChanged(object? sender, EventArgs e)
+        {
+            m_viewModel.Model.SelectedTab = CurrentPage;
         }
     }
 }
