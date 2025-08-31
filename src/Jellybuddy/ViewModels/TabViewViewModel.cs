@@ -18,7 +18,7 @@ namespace Jellybuddy.ViewModels
         
         public void OnNavigatedTo()
         {
-            if (SelectedTab?.BindingContext is IPageViewModel toPageViewModel)
+            if (SelectedTab?.BindingContext is IPageViewModel toPageViewModel && toPageViewModel != this)
             {
                 toPageViewModel.OnNavigatedTo();
             }
@@ -26,7 +26,7 @@ namespace Jellybuddy.ViewModels
 
         public void OnNavigatedFrom()
         {
-            if (SelectedTab?.BindingContext is IPageViewModel toPageViewModel)
+            if (SelectedTab?.BindingContext is IPageViewModel toPageViewModel && toPageViewModel != this)
             {
                 toPageViewModel.OnNavigatedFrom();
             }
@@ -34,12 +34,12 @@ namespace Jellybuddy.ViewModels
 
         partial void OnSelectedTabChanged(Page? oldValue, Page? newValue)
         {
-            if (oldValue?.BindingContext is IPageViewModel oldPageViewModel)
+            if (oldValue?.BindingContext is IPageViewModel oldPageViewModel && oldPageViewModel != this)
             {
                 oldPageViewModel.OnNavigatedFrom();
             }
 
-            if (newValue?.BindingContext is IPageViewModel newPageViewModel)
+            if (newValue?.BindingContext is IPageViewModel newPageViewModel && newPageViewModel != this)
             {
                 newPageViewModel.OnNavigatedTo();
             }

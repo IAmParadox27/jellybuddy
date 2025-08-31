@@ -3,6 +3,8 @@ using CommunityToolkit.Maui;
 using Jellybuddy.Core.DependencyInjection;
 using Jellybuddy.Services;
 using Maui.Biometric;
+using MauiIcons.Core;
+using MauiIcons.Material;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
 
@@ -23,6 +25,8 @@ namespace Jellybuddy
 				.UseMauiApp<App>()
 				.UseMauiCommunityToolkit()
 				.UseBiometricAuthentication()
+				.UseMauiIconsCore()
+				.UseMaterialMauiIcons()
 				.UseViewModels()
 				.ConfigureSyncfusionCore()
 				.ConfigureFonts(fonts =>
@@ -32,6 +36,7 @@ namespace Jellybuddy
 				});
 
 			builder.Services.AddSingleton<INavigationManager, NavigationManager>();
+			builder.Services.AddSingleton<IUIContext, UIContext>();
 
 #if DEBUG
 			builder.Logging.AddDebug();

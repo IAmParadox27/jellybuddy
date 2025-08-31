@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Text.Json;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -28,28 +27,37 @@ namespace Jellybuddy.ViewModels
         
         private readonly IModel<DataCache> m_model;
         private readonly INavigationManager m_navigationManager;
-        private readonly IDispatcherTimer m_refreshTimer;
+        private readonly IUIContext m_uiContext;
 
-        public ActiveSessionsViewModel(IModel<DataCache> model, INavigationManager navigationManager)
+        public ActiveSessionsViewModel(IModel<DataCache> model, INavigationManager navigationManager, IUIContext uiContext)
         {
             m_model = model;
             m_navigationManager = navigationManager;
+            m_uiContext = uiContext;
 
             RefreshCommand = new AsyncRelayCommand(LoadSessionsAsync);
-            
-            m_refreshTimer = Application.Current!.Dispatcher.CreateTimer();
-            m_refreshTimer.Interval = TimeSpan.FromSeconds(2);
-            m_refreshTimer.Tick += RefreshTimerOnTick;
         }
 
-        private async void RefreshTimerOnTick(object? sender, EventArgs e)
+        private bool m_isTimerRefreshing = false;
+
+        private async Task RefreshTimer()
         {
-            try
+            if (m_isTimerRefreshing)
             {
-                await LoadSessionsAsync(false);
+                // Don't allow a second timer to be started.
+                return;
             }
-            catch
+            
+            m_isTimerRefreshing = true;
+            while (m_isTimerRefreshing)
             {
+                try
+                {
+                    await LoadSessionsAsync(false);
+                }
+                catch
+                {
+                }
             }
         }
 
@@ -62,7 +70,7 @@ namespace Jellybuddy.ViewModels
         {
             if (isRefreshing)
             {
-                IsRefreshing = true;
+                m_uiContext.Run(() => IsRefreshing = true);
             }
             
             foreach (JellyfinServerConnection serverConnection in m_model.Data.Servers)
@@ -85,21 +93,21 @@ namespace Jellybuddy.ViewModels
 
                     if (existingSession != null)
                     {
-                        session.CopyValues(ref existingSession);
+                        m_uiContext.Run(() => session.CopyValues(ref existingSession));
 
                         if (session.NowPlayingItem == null)
                         {
-                            AllSessions.Remove(session);
+                            m_uiContext.Run(() => AllSessions.Remove(session));
                         }
                     }
                     else if (session.NowPlayingItem != null)
                     {
-                        AllSessions.Add(session);
+                        m_uiContext.Run(() => AllSessions.Add(session));
                     }
                 }
             }
 
-            IsRefreshing = false;
+            m_uiContext.Run(() => IsRefreshing = false);
         }
         
         private async Task GetSessionsForServerAsync(JellyfinServerConnection server)
@@ -132,26 +140,29 @@ namespace Jellybuddy.ViewModels
                         {
                             existing.Where(x => x.NowPlayingItem == null).ToList().ForEach(x =>
                             {
-                                existing.Remove(x);
+                                m_uiContext.Run(() => existing.Remove(x));
                             });
                             
                             foreach (SessionInfoDto session in sessions)
                             {
                                 SessionInfoDto? existingSession = existing.FirstOrDefault(x => x.Id == session.Id);
 
-                                if (existingSession != null)
+                                m_uiContext.Run(() =>
                                 {
-                                    session.CopyValues(ref existingSession);
-                                }
-                                else
-                                {
-                                    existing.Add(session);
-                                }
+                                    if (existingSession != null)
+                                    {
+                                        session.CopyValues(ref existingSession);
+                                    }
+                                    else
+                                    {
+                                        existing.Add(session);
+                                    }
+                                });
                             }
                         }
                         else
                         {
-                            Sessions.Add(new ActiveSessionGroup(server.Url, sessions.Where(x => x.NowPlayingItem != null)));
+                            m_uiContext.Run(() => Sessions.Add(new ActiveSessionGroup(server.Url, sessions.Where(x => x.NowPlayingItem != null))));
                         }
                     }
                 }
@@ -165,13 +176,13 @@ namespace Jellybuddy.ViewModels
 
         public void OnNavigatedTo()
         {
-            IsRefreshing = true;
-            m_refreshTimer.Start();
+            m_uiContext.Run(() => IsRefreshing = true);
+            Task.Run(RefreshTimer);
         }
 
         public void OnNavigatedFrom()
         {
-            m_refreshTimer.Stop();
+            m_isTimerRefreshing = false;
         }
     }
 }
