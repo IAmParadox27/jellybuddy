@@ -53,10 +53,10 @@
             Name="GenerateJellyfinApiModels" 
             BeforeTargets="CoreCompile" 
             Inputs="$(JellyfinServerUrl)" 
-            Outputs="$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs">
-        <Exec Command="$(NSwagExe) openapi2csclient /input:$(JellyfinServerUrl)/api-docs/openapi.json /classname:Models /namespace:Jellyfin.Api /output:$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs /GenerateDtoTypes:true /GenerateClientClasses:false /classstyle:inpc" ConsoleToMsBuild="true" />
+            Outputs="$(MSBuildProjectDirectory)/Jellyfin.Api.Models.g.cs">
+        <Exec Command="$(NSwagExe_Net80) openapi2csclient /input:$(JellyfinServerUrl)/api-docs/openapi.json /classname:Models /namespace:Jellyfin.Api /output:$(MSBuildProjectDirectory)/Jellyfin.Api.Models.g.cs /GenerateDtoTypes:true /GenerateClientClasses:false /classstyle:inpc" ConsoleToMsBuild="true" />
     </Target>
     <Target Name="ForceReGenerationOnRebuild" AfterTargets="CoreClean">
-        <Delete Files="$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs" />
+        <Delete Files="$(MSBuildProjectDirectory)/Jellyfin.Api.Models.g.cs" />
     </Target>
 </Project>
