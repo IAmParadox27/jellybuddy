@@ -20,11 +20,44 @@ A Jellyfin companion app for iOS and Android built in .NET Maui (because I don't
 
 
 
-## TODO LIST
+## To-Do LIST
 
-1. Ability to manage multiple servers
-2. See Active sessions, with playback state, the device playing, user and if it is direct or transcode, also there ability to send a message to that session
-3. Then comes the library tab, where you could look at the number of items in your library, and going into each one would just load a poster, and basic item details on more details
-4. Then Users tab, where you can create, edit/delete/modify a user, basically everything that is in the user page in the jellyfin web (allowing transcoding, library permission etc) also shows if the user is active or not.
-5. Them comes statistics, something like streamyfin/jellystats, number of movies in the libbrary, number of watched movies and also if possible per user stats. (nice looking graphs)
-6. More details - basically everything else in the jellyfin dashboard, plugins, scheduled tasks, devices, activity log, Alerts, etc
+## Server Management
+- [ ] Add ability to manage multiple Jellyfin servers
+- [ ] Switch between servers easily
+
+## Active Sessions
+- [ ] Show all active sessions
+  - [ ] Display playback state (playing, paused, stopped)
+  - [ ] Show device playing
+  - [ ] Show user name
+  - [ ] Indicate if playback is direct or transcoded
+- [ ] Add ability to send a message to any session
+
+## Library Management
+- [ ] Show number of items in each library
+- [ ] Display library content with posters (Streamyfin style?)
+- [ ] Show basic item details
+- [ ] Provide a “more details” view for each item
+
+## Users Management
+- [ ] List all users
+- [ ] Show active/inactive status
+- [ ] Add ability to Create new users
+- [ ] Add ability to Edit existing users
+- [ ] Add ability to Delete users
+- [ ] Add ability to Manage user permissions (library access, transcoding, etc.)
+
+## Statistics
+- [ ] Display library statistics (similar to Streamyfin/JellyStats)
+  - [ ] Total number of movies/TV shows
+  - [ ] Number of watched items
+  - [ ] Per-user statistics
+- [ ] Visualize data with graphs (Streamystats style?)
+
+## More Details / Advanced
+- [ ] Plugins management
+- [ ] Scheduled tasks overview and ab
+- [ ] Device list and details
+- [ ] Activity log
+- [ ] Alerts & notifications
