@@ -170,7 +170,7 @@ namespace Jellybuddy.ViewModels
             else
             {
                 // Replace with removing server from list when multiple can be added
-                m_navigationManager.NavigateTo<LoginPage>();
+                await m_navigationManager.NavigateToAsync<LoginPage>();
             }
         }
 
