@@ -11,6 +11,8 @@ using Jellybuddy.Dto;
 using Jellybuddy.Models;
 using Jellybuddy.Pages;
 using Jellybuddy.Services;
+using Jellyfin.Api;
+using Newtonsoft.Json.Linq;
 
 namespace Jellybuddy.ViewModels
 {
@@ -172,9 +174,12 @@ namespace Jellybuddy.ViewModels
                 if (response.IsSuccessStatusCode)
                 {
                     string? responseJson = await response.Content.ReadAsStringAsync();
-                    JsonNode? json = JsonNode.Parse(responseJson);
+                    AuthenticationResult? authResult = JObject.Parse(responseJson).ToObject<AuthenticationResult>();
 
-                    accessToken = json?["AccessToken"]?.GetValue<string>();
+                    if (authResult?.User.Policy.IsAdministrator ?? false)
+                    {
+                        accessToken = authResult?.AccessToken;
+                    }
                 }
             }
             catch (Exception)
