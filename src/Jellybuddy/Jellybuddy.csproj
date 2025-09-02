@@ -84,6 +84,8 @@
         <PackageReference Include="Syncfusion.Maui.Expander" Version="30.2.7" />
         <PackageReference Include="Syncfusion.Maui.Popup" Version="30.2.7" />
         <PackageReference Include="Syncfusion.Maui.PullToRefresh" Version="30.2.7" />
+        <PackageReference Include="Syncfusion.Maui.TabView" Version="30.2.7" />
+        <PackageReference Include="Syncfusion.Maui.Toolkit" Version="1.0.6" />
 	</ItemGroup>
     
     <ItemGroup>

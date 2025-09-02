@@ -7,6 +7,7 @@ using MauiIcons.Core;
 using MauiIcons.Material;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
+using Syncfusion.Maui.Toolkit.Hosting;
 
 namespace Jellybuddy
 {
@@ -22,6 +23,7 @@ namespace Jellybuddy
 			
 			MauiAppBuilder builder = MauiApp.CreateBuilder();
 			builder
+				.ConfigureSyncfusionToolkit()
 				.UseMauiApp<App>()
 				.UseMauiCommunityToolkit()
 				.UseBiometricAuthentication()

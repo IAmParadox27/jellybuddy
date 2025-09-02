@@ -1,41 +1,35 @@
-﻿using Jellybuddy.Core.DependencyInjection;
+﻿using System.Reflection;
+using Jellybuddy.Core.DependencyInjection;
+using Jellybuddy.Pages;
 
 namespace Jellybuddy.Services
 {
     public class NavigationManager : INavigationManager
     {
         private readonly IServiceProvider m_serviceProvider;
-
+        
         public NavigationManager(IServiceProvider serviceProvider)
         {
             m_serviceProvider = serviceProvider;
         }
         
-        public void NavigateTo<T>() where T : Page
+        public Task NavigateToAsync<T>() where T : Page
         {
-            ChangeToView(ActivatorUtilities.CreateInstance<T>(m_serviceProvider));
+            return ChangeToViewAsync<T>();
         }
 
-        public void NavigateTo<TView, TViewModel>() where TView : Page where TViewModel : class
+        private async Task ChangeToViewAsync<T>() where T : Page
         {
-            TView view = ActivatorUtilities.CreateInstance<TView>(m_serviceProvider);
-            view.BindingContext = m_serviceProvider.GetRequiredService<IViewModel<TViewModel>>().Model;
-
-            ChangeToView(view);
-        }
-
-        private void ChangeToView<T>(T view) where T : Page
-        {
-            if (Application.Current!.MainPage != null && Application.Current!.MainPage.BindingContext is IPageViewModel fromPageViewModel)
+            if (DeviceInfo.Platform == DevicePlatform.WinUI)
             {
-                fromPageViewModel.OnNavigatedFrom();
+                Shell.Current.Dispatcher.Dispatch(async () =>
+                {
+                    await Shell.Current.GoToAsync($"///{typeof(T).Name}");
+                });
             }
-            
-            Application.Current!.MainPage = view;
-            
-            if (view.BindingContext is IPageViewModel toPageViewModel)
+            else
             {
-                toPageViewModel.OnNavigatedTo();
+                await Shell.Current.GoToAsync($"///{typeof(T).Name}");
             }
         }
     }

@@ -12,7 +12,7 @@ namespace Jellybuddy.ViewModels
         private IViewModel<UsersViewModel> m_usersViewModel;
         
         [ObservableProperty]
-        private Page? m_selectedTab;
+        private View? m_selectedTab;
 
         public TabViewViewModel(IViewModel<ActiveSessionsViewModel> activeSessionsViewModel, IViewModel<UsersViewModel> usersViewModel)
         {
@@ -36,7 +36,7 @@ namespace Jellybuddy.ViewModels
             }
         }
 
-        partial void OnSelectedTabChanged(Page? oldValue, Page? newValue)
+        partial void OnSelectedTabChanged(View? oldValue, View? newValue)
         {
             if (oldValue?.BindingContext is IPageViewModel oldPageViewModel && oldPageViewModel != this)
             {

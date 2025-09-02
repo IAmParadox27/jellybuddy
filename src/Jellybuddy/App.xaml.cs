@@ -6,7 +6,7 @@
 		{
 			InitializeComponent();
 
-			MainPage = ActivatorUtilities.CreateInstance<LoginPage>(serviceProvider);
+			MainPage = ActivatorUtilities.CreateInstance<AppShell>(serviceProvider);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:cards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
              xmlns:pullToRefresh="clr-namespace:Syncfusion.Maui.PullToRefresh;assembly=Syncfusion.Maui.PullToRefresh"
@@ -10,40 +10,24 @@
              xmlns:models="clr-namespace:Jellybuddy.Models"
              xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
              xmlns:converters="clr-namespace:Jellybuddy.Converters"
-             x:Class="Jellybuddy.Pages.TabPages.DashboardTab" BackgroundColor="#1C1B1F"
+             x:Class="Jellybuddy.Pages.TabPages.DashboardTab"
              x:DataType="viewModels:ActiveSessionsViewModel">
-    <ContentPage.Content>
+    <ContentView.Content>
         <pullToRefresh:SfPullToRefresh RefreshCommand="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
             <pullToRefresh:SfPullToRefresh.PullableContent>
                 <ScrollView>
-                    <CollectionView ItemsSource="{Binding AllSessions}">
-                        <!-- <ListView.GroupHeaderTemplate> -->
-                        <!--     <DataTemplate x:DataType="models:ActiveSessionGroup"> -->
-                        <!--         <StackLayout> -->
-                        <!--             <Label Text="{Binding Name}" VerticalOptions="CenterAndExpand" -->
-                        <!--                    TextColor="Black" -->
-                        <!--                    BackgroundColor="LightGray" -->
-                        <!--                    FontSize="20" -->
-                        <!--                    FontAttributes="Bold" /> -->
-                        <!--         </StackLayout> -->
-                        <!--     </DataTemplate> -->
-                        <!-- </ListView.GroupHeaderTemplate> -->
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="api:SessionInfoDto">
-                                <controls:ActiveSessionCard BindingContext="{Binding}" />
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                    <!-- <FlexLayout AlignContent="Start" Direction="Row" FlowDirection="LeftToRight" AlignItems="Center" Wrap="Wrap"> -->
-                    <!--     <controls:ActiveSessionCard /> -->
-                    <!--     <controls:ActiveSessionCard /> -->
-                    <!--     <controls:ActiveSessionCard /> -->
-                    <!--     <controls:ActiveSessionCard /> -->
-                    <!--     <controls:ActiveSessionCard /> -->
-                    <!--     <controls:ActiveSessionCard /> -->
-                    <!-- </FlexLayout> -->
+                    <StackLayout Orientation="Vertical">
+                        <Label Text="Active Sessions" FontSize="32" FontAttributes="Bold" Margin="10, 20, 10, 10" />
+                        <CollectionView ItemsSource="{Binding AllSessions}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="api:SessionInfoDto">
+                                    <controls:ActiveSessionCard BindingContext="{Binding}" />
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
                 </ScrollView>
             </pullToRefresh:SfPullToRefresh.PullableContent>
         </pullToRefresh:SfPullToRefresh>
-    </ContentPage.Content>
-</ContentPage>
+    </ContentView.Content>
+</ContentView>

@@ -1,14 +1,13 @@
 ﻿using Jellybuddy.Core.DependencyInjection;
+using Jellybuddy.Services;
 using Jellybuddy.ViewModels;
 
 namespace Jellybuddy
 {
-	public partial class LoginPage
+	public partial class LoginPage : IViewModelPage<LoginFormViewModel>
 	{
-		public LoginPage(IViewModel<LoginFormViewModel> viewModel)
+		public LoginPage()
 		{
-			BindingContext = viewModel.Model;
-			
 			InitializeComponent();
 		}
 	}

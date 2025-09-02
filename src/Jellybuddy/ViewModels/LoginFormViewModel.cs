@@ -23,6 +23,9 @@ namespace Jellybuddy.ViewModels
         
         [ObservableProperty]
         private ICommand m_signInCommand;
+        
+        [ObservableProperty]
+        private bool m_isSheetOpen = false;
 
         private readonly INavigationManager m_navigationManager;
         private readonly IModel<DataCache> m_dataCache;
@@ -48,9 +51,16 @@ namespace Jellybuddy.ViewModels
                         
                         m_dataCache.Data.Servers.Add(serverConnection);
                     }
-                    
-                    // This is where we'd want to do biometric authentication
-                    m_navigationManager.NavigateTo<MainTabbedPage>();
+
+                    if (serverConnections.All(x => x.AccessToken != null))
+                    {
+                        // This is where we'd want to do biometric authentication
+                        await m_navigationManager.NavigateToAsync<MainTabbedPage>();
+                    }
+                    else
+                    {
+                        IsSheetOpen = true;
+                    }
                 }
             });
         }
@@ -116,7 +126,9 @@ namespace Jellybuddy.ViewModels
                     // Encryption algorithm into cache folder might be okay?
                 }
 
-                m_navigationManager.NavigateTo<MainTabbedPage>();
+                IsSheetOpen = false;
+
+                await m_navigationManager.NavigateToAsync<MainTabbedPage>();
             }
             else
             {
@@ -188,6 +200,10 @@ namespace Jellybuddy.ViewModels
             }
             
             return accessToken;
+        }
+
+        partial void OnIsSheetOpenChanged(bool oldValue, bool newValue)
+        {
         }
     }
 }

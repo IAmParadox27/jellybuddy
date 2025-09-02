@@ -4,25 +4,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Jellybuddy.Core.DependencyInjection;
+using Jellybuddy.Services;
 using Jellybuddy.ViewModels;
+using Syncfusion.Maui.TabView;
 
 namespace Jellybuddy.Pages
 {
-    public partial class MainTabbedPage
+    public partial class MainTabbedPage : IViewModelPage<TabViewViewModel>
     {
-        private IViewModel<TabViewViewModel> m_viewModel;
+        public TabViewViewModel? ViewModel => (TabViewViewModel?)BindingContext;
         
-        public MainTabbedPage(IViewModel<TabViewViewModel> tabViewViewModel)
+        public MainTabbedPage()
         {
-            m_viewModel = tabViewViewModel;
-            BindingContext = m_viewModel.Model;
-            
             InitializeComponent();
         }
 
         private void MainTabbedPage_OnCurrentPageChanged(object? sender, EventArgs e)
         {
-            m_viewModel.Model.SelectedTab = CurrentPage;
+        }
+
+        private void SfTabView_OnSelectionChanged(object? sender, TabSelectionChangedEventArgs e)
+        {
+            if (ViewModel != null)
+            {
+                ViewModel.SelectedTab = TabView.Items[(int)e.NewIndex].Content;
+            }
+        }
+
+        protected override void OnHandlerChanged()
+        {
+            base.OnHandlerChanged();
+            
+            if (ViewModel != null)
+            {
+                ViewModel.SelectedTab = TabView.Items.First().Content;
+            }
         }
     }
 }

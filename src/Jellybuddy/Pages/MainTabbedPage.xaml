@@ -1,21 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<TabbedPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<pages:ServiceContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:tabPages="clr-namespace:Jellybuddy.Pages.TabPages"
              xmlns:pages="clr-namespace:Jellybuddy.Pages"
              xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
              xmlns:icons="clr-namespace:MauiIcons.Material;assembly=MauiIcons.Material"
+             xmlns:tabView="http://schemas.syncfusion.com/maui"
              x:Class="Jellybuddy.Pages.MainTabbedPage"
              x:DataType="viewModels:TabViewViewModel"
-             CurrentPageChanged="MainTabbedPage_OnCurrentPageChanged">
-    <tabPages:DashboardTab Title="Dashboard" BindingContext="{Binding ActiveSessionsViewModel.Model}">
-        <tabPages:DashboardTab.IconImageSource>
-            <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Subscriptions}, IconColor=Black}" />
-        </tabPages:DashboardTab.IconImageSource>
-    </tabPages:DashboardTab>
-    <tabPages:LibraryTab Title="Library" />
-    <tabPages:UsersTab Title="Users" BindingContext="{Binding UsersViewModel.Model}" />
-    <tabPages:StatsTab Title="Stats" />
-    <tabPages:SettingsTab Title="Settings" />
-</TabbedPage>
+             >
+             <!-- CurrentPageChanged="MainTabbedPage_OnCurrentPageChanged" -->
+    <ContentPage.Content>
+        <tabView:SfTabView x:Name="TabView" TabBarPlacement="Bottom" SelectionChanged="SfTabView_OnSelectionChanged" TabBarHeight="60">
+            <tabView:SfTabView.Items>
+                <tabView:SfTabItem Header="Dashboard" ImagePosition="Top">
+                    <tabPages:DashboardTab BindingContext="{Binding ActiveSessionsViewModel.Model}" />
+                    <tabView:SfTabItem.ImageSource>
+                        <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Subscriptions}, IconColor=Black}" />
+                    </tabView:SfTabItem.ImageSource>
+                </tabView:SfTabItem>
+                <tabView:SfTabItem Header="Users" ImagePosition="Top">
+                    <tabPages:UsersTab BindingContext="{Binding UsersViewModel.Model}" />
+                    <tabView:SfTabItem.ImageSource>
+                        <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.People}, IconColor=Black}" />
+                    </tabView:SfTabItem.ImageSource>
+                </tabView:SfTabItem>
+            </tabView:SfTabView.Items>
+        </tabView:SfTabView>
+    </ContentPage.Content>
+    <!-- <tabPages:LibraryTab Title="Library" /> -->
+    <!-- <tabPages:UsersTab Title="Users" BindingContext="{Binding UsersViewModel.Model}" /> -->
+    <!-- <tabPages:StatsTab Title="Stats" /> -->
+    <!-- <tabPages:SettingsTab Title="Settings" /> -->
+</pages:ServiceContentPage>

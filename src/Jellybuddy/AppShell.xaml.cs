@@ -7,8 +7,6 @@ namespace Jellybuddy
 		public AppShell()
 		{
 			InitializeComponent();
-			
-			Routing.RegisterRoute(nameof(MainTabbedPage), typeof(MainTabbedPage));
 		}
 	}
 }

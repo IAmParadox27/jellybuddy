@@ -4,11 +4,17 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Jellybuddy"
+    xmlns:pages="using:Jellybuddy.Pages"
     Shell.FlyoutBehavior="Disabled"
+    BackgroundColor="#1C1B1F"
     Title="Jellybuddy">
 
     <ShellContent
         ContentTemplate="{DataTemplate local:LoginPage}"
-        Route="MainPage" />
+        Route="LoginPage" />
+    
+    <ShellContent
+        ContentTemplate="{DataTemplate pages:MainTabbedPage}"
+        Route="MainTabbedPage" />
 
 </Shell>

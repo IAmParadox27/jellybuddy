@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Jellybuddy.Pages.TabPages
 {
-    public partial class DashboardTab : ContentPage
+    public partial class DashboardTab
     {
         public DashboardTab()
         {
