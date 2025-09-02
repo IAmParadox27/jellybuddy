@@ -15,7 +15,7 @@
         </tabPages:DashboardTab.IconImageSource>
     </tabPages:DashboardTab>
     <tabPages:LibraryTab Title="Library" />
-    <tabPages:UsersTab Title="Users" />
+    <tabPages:UsersTab Title="Users" BindingContext="{Binding UsersViewModel.Model}" />
     <tabPages:StatsTab Title="Stats" />
     <tabPages:SettingsTab Title="Settings" />
 </TabbedPage>

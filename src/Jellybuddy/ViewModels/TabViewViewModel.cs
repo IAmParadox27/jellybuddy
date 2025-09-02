@@ -9,11 +9,15 @@ namespace Jellybuddy.ViewModels
         private IViewModel<ActiveSessionsViewModel> m_activeSessionsViewModel;
         
         [ObservableProperty]
+        private IViewModel<UsersViewModel> m_usersViewModel;
+        
+        [ObservableProperty]
         private Page? m_selectedTab;
 
-        public TabViewViewModel(IViewModel<ActiveSessionsViewModel> activeSessionsViewModel)
+        public TabViewViewModel(IViewModel<ActiveSessionsViewModel> activeSessionsViewModel, IViewModel<UsersViewModel> usersViewModel)
         {
             ActiveSessionsViewModel = activeSessionsViewModel;
+            UsersViewModel = usersViewModel;
         }
         
         public void OnNavigatedTo()

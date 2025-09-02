@@ -2,8 +2,28 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Jellybuddy.Pages.TabPages.UsersTab">
+             xmlns:listView="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
+             xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
+             x:Class="Jellybuddy.Pages.TabPages.UsersTab"
+             x:DataType="viewModels:UsersViewModel">
     <ContentPage.Content>
-        <Label Text="Users!" />
+        <listView:SfListView ItemsSource="{Binding Users}" AllowSwiping="True">
+            <listView:SfListView.EndSwipeTemplate>
+                <DataTemplate>
+                    <StackLayout Orientation="Horizontal">
+                        <Grid WidthRequest="200" BackgroundColor="Red" />
+                        <Grid WidthRequest="200" BackgroundColor="Orange" />
+                    </StackLayout>
+                </DataTemplate>
+            </listView:SfListView.EndSwipeTemplate>
+            <listView:SfListView.ItemTemplate>
+                <DataTemplate x:DataType="api:UserDto">
+                    <Grid Padding="10" RowDefinitions="*,Auto,*" HeightRequest="500">
+                        <Label Grid.Row="1" Text="{Binding Name}" FontAttributes="Bold" />
+                    </Grid>
+                </DataTemplate>
+            </listView:SfListView.ItemTemplate>
+        </listView:SfListView>
     </ContentPage.Content>
 </ContentPage>
