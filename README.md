@@ -29,9 +29,9 @@ A Jellyfin companion app for iOS and Android built in .NET Maui (because I don't
 ## Active Sessions
 - [ ] Show all active sessions
   - [ ] Display playback state (playing, paused, stopped)
-  - [ ] Show device playing
-  - [ ] Show user name
-  - [ ] Indicate if playback is direct or transcoded
+  - [x] Show device playing
+  - [x] Show user name
+  - [x] Indicate if playback is direct or transcoded
 - [ ] Add ability to send a message to any session
 
 ## Library Management
