@@ -7,7 +7,7 @@ using Jellybuddy.Core.DependencyInjection;
 using Jellybuddy.Core.Library;
 using Jellybuddy.Services;
 using Jellybuddy.ViewModels;
-using Syncfusion.Maui.TabView;
+using Syncfusion.Maui.Toolkit.TabView;
 
 namespace Jellybuddy.Pages
 {
@@ -20,18 +20,6 @@ namespace Jellybuddy.Pages
             InitializeComponent();
         }
 
-        private void MainTabbedPage_OnCurrentPageChanged(object? sender, EventArgs e)
-        {
-        }
-
-        private void SfTabView_OnSelectionChanged(object? sender, TabSelectionChangedEventArgs e)
-        {
-            if (ViewModel != null)
-            {
-                ViewModel.SelectedTab = TabView.Items[(int)e.NewIndex].Content;
-            }
-        }
-
         protected override void OnHandlerChanged()
         {
             base.OnHandlerChanged();
@@ -39,6 +27,14 @@ namespace Jellybuddy.Pages
             if (ViewModel != null)
             {
                 ViewModel.SelectedTab = TabView.Items.First().Content;
+            }
+        }
+
+        private void TabView_OnSelectionChanged(object? sender, TabSelectionChangedEventArgs e)
+        {
+            if (ViewModel != null)
+            {
+                ViewModel.SelectedTab = TabView.Items[e.NewIndex].Content;
             }
         }
     }

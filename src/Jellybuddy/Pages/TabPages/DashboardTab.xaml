@@ -2,20 +2,18 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:cards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
-             xmlns:pullToRefresh="clr-namespace:Syncfusion.Maui.PullToRefresh;assembly=Syncfusion.Maui.PullToRefresh"
-             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:controls="clr-namespace:Jellybuddy.Controls"
              xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
              xmlns:models="clr-namespace:Jellybuddy.Models"
              xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
              xmlns:converters="clr-namespace:Jellybuddy.Converters"
+             xmlns:sf="http://schemas.syncfusion.com/maui/toolkit"
              x:Class="Jellybuddy.Pages.TabPages.DashboardTab"
              x:DataType="viewModels:ActiveSessionsViewModel">
     <ContentView.Content>
-        <pullToRefresh:SfPullToRefresh RefreshCommand="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
-            <pullToRefresh:SfPullToRefresh.PullableContent>
-                <ScrollView>
+        <sf:SfPullToRefresh RefreshCommand="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
+            <sf:SfPullToRefresh.PullableContent>
+                <ScrollView Padding="10">
                     <StackLayout Orientation="Vertical">
                         <Label Text="Active Sessions" FontSize="32" FontAttributes="Bold" Margin="10, 20, 10, 10" />
                         <CollectionView ItemsSource="{Binding AllSessions}">
@@ -27,7 +25,7 @@
                         </CollectionView>
                     </StackLayout>
                 </ScrollView>
-            </pullToRefresh:SfPullToRefresh.PullableContent>
-        </pullToRefresh:SfPullToRefresh>
+            </sf:SfPullToRefresh.PullableContent>
+        </sf:SfPullToRefresh>
     </ContentView.Content>
 </ContentView>

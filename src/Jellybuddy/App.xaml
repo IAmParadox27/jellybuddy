@@ -2,8 +2,7 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Jellybuddy"
-             xmlns:syncTheme="clr-namespace:Syncfusion.Maui.Themes;assembly=Syncfusion.Maui.Core"
-             xmlns:sf="clr-namespace:Syncfusion.Maui.Toolkit.Themes;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:themes="http://schemas.syncfusion.com/maui/toolkit"
              x:Class="Jellybuddy.App"
              UserAppTheme="Dark">
     <Application.Resources>
@@ -12,8 +11,7 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
                 
-                <syncTheme:SyncfusionThemeResourceDictionary VisualTheme="MaterialDark" />
-                <sf:SyncfusionThemeResourceDictionary VisualTheme="MaterialDark" />
+                <themes:SyncfusionThemeResourceDictionary VisualTheme="MaterialDark" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

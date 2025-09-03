@@ -4,40 +4,53 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
              xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
+             xmlns:pullToRefresh="http://schemas.syncfusion.com/maui/toolkit"
              x:Class="Jellybuddy.Pages.TabPages.UsersTab"
              x:DataType="viewModels:UsersViewModel">
     <ContentView.Content>
-        <CollectionView ItemsSource="{Binding Users}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="api:UserDto">
-                    <Border Margin="5" Padding="10" BackgroundColor="#36343B" StrokeShape="RoundRectangle 10" StrokeThickness="0">
-                        <StackLayout Orientation="Vertical">
-                            <Grid ColumnDefinitions="Auto,*,Auto">
-                                <StackLayout Grid.Column="1">
-                                    <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
-                                    <Label Text="User">
-                                        <Label.Style>
-                                            <Style TargetType="Label">
-                                                <Style.Triggers>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding Policy.IsAdministrator}" Value="True">
-                                                        <Setter Property="Text" Value="Administrator" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Label.Style>
-                                    </Label>
-                                    <Label Text="{Binding LastActivityDate}" />
-                                    <Label Text="{Binding LastLoginDate}" />
-                                </StackLayout>
-                            </Grid>
-                            <Rectangle HeightRequest="1" BackgroundColor="Gray" />
-                            <StackLayout Orientation="Horizontal" FlowDirection="RightToLeft">
-                            
-                            </StackLayout>
-                        </StackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <pullToRefresh:SfPullToRefresh>
+            <pullToRefresh:SfPullToRefresh.PullableContent>
+                <ScrollView Padding="10">
+                    <StackLayout Orientation="Vertical">
+                        <Label Text="Users" FontSize="32" FontAttributes="Bold" Margin="10, 20, 10, 10" />
+                        <CollectionView ItemsSource="{Binding Users}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="api:UserDto">
+                                    <Border Padding="10" BackgroundColor="#36343B" StrokeShape="RoundRectangle 10" StrokeThickness="0">
+                                        <StackLayout Orientation="Vertical">
+                                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                                <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="42" WidthRequest="42" BackgroundColor="White">
+                                                    <Image Source="https://static.vecteezy.com/system/resources/thumbnails/024/983/914/small/simple-user-default-icon-free-png.png" Aspect="Center" Margin="5, 10, 5, 0"  />
+                                                </Border>
+                                                <StackLayout Grid.Column="1">
+                                                    <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+                                                    <Label Text="User">
+                                                        <Label.Style>
+                                                            <Style TargetType="Label">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger TargetType="Label" Binding="{Binding Policy.IsAdministrator}" Value="True">
+                                                                        <Setter Property="Text" Value="Administrator" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Label.Style>
+                                                    </Label>
+                                                    <Label Text="{Binding LastActivityDate}" />
+                                                    <Label Text="{Binding LastLoginDate}" />
+                                                </StackLayout>
+                                            </Grid>
+                                            <Rectangle HeightRequest="1" BackgroundColor="Gray" />
+                                            <StackLayout Orientation="Horizontal" FlowDirection="RightToLeft">
+                                            
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </ScrollView>
+            </pullToRefresh:SfPullToRefresh.PullableContent>
+        </pullToRefresh:SfPullToRefresh>
     </ContentView.Content>
 </ContentView>

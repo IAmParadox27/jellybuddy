@@ -6,45 +6,45 @@
              xmlns:pages="clr-namespace:Jellybuddy.Pages"
              xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
              xmlns:icons="clr-namespace:MauiIcons.Material;assembly=MauiIcons.Material"
-             xmlns:tabView="http://schemas.syncfusion.com/maui"
+             xmlns:sf="http://schemas.syncfusion.com/maui/toolkit"
              x:Class="Jellybuddy.Pages.MainTabbedPage"
              x:DataType="viewModels:TabViewViewModel"
              >
              <!-- CurrentPageChanged="MainTabbedPage_OnCurrentPageChanged" -->
     <ContentPage.Content>
-        <tabView:SfTabView x:Name="TabView" TabBarPlacement="Bottom" SelectionChanged="SfTabView_OnSelectionChanged" TabBarHeight="60">
-            <tabView:SfTabView.Items>
-                <tabView:SfTabItem Header="Dashboard" ImagePosition="Top">
+        <sf:SfTabView x:Name="TabView" TabBarPlacement="Bottom" SelectionChanged="TabView_OnSelectionChanged" TabBarHeight="60">
+            <sf:SfTabView.Items>
+                <sf:SfTabItem Header="Dashboard" ImagePosition="Top">
                     <tabPages:DashboardTab BindingContext="{Binding ActiveSessionsViewModel.Model}" />
-                    <tabView:SfTabItem.ImageSource>
+                    <sf:SfTabItem.ImageSource>
                         <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Subscriptions}}" />
-                    </tabView:SfTabItem.ImageSource>
-                </tabView:SfTabItem>
-                <tabView:SfTabItem Header="Library" ImagePosition="Top">
+                    </sf:SfTabItem.ImageSource>
+                </sf:SfTabItem>
+                <sf:SfTabItem Header="Library" ImagePosition="Top">
                     <tabPages:LibraryTab />
-                    <tabView:SfTabItem.ImageSource>
+                    <sf:SfTabItem.ImageSource>
                         <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.LibraryBooks}}" />
-                    </tabView:SfTabItem.ImageSource>
-                </tabView:SfTabItem>
-                <tabView:SfTabItem Header="Users" ImagePosition="Top">
+                    </sf:SfTabItem.ImageSource>
+                </sf:SfTabItem>
+                <sf:SfTabItem Header="Users" ImagePosition="Top">
                     <tabPages:UsersTab BindingContext="{Binding UsersViewModel.Model}" />
-                    <tabView:SfTabItem.ImageSource>
+                    <sf:SfTabItem.ImageSource>
                         <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.People}}" />
-                    </tabView:SfTabItem.ImageSource>
-                </tabView:SfTabItem>
-                <tabView:SfTabItem Header="Stats" ImagePosition="Top">
+                    </sf:SfTabItem.ImageSource>
+                </sf:SfTabItem>
+                <sf:SfTabItem Header="Stats" ImagePosition="Top">
                     <tabPages:StatsTab />
-                    <tabView:SfTabItem.ImageSource>
+                    <sf:SfTabItem.ImageSource>
                         <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.AutoGraph}}" />
-                    </tabView:SfTabItem.ImageSource>
-                </tabView:SfTabItem>
-                <tabView:SfTabItem Header="Settings" ImagePosition="Top">
+                    </sf:SfTabItem.ImageSource>
+                </sf:SfTabItem>
+                <sf:SfTabItem Header="Settings" ImagePosition="Top">
                     <tabPages:SettingsTab />
-                    <tabView:SfTabItem.ImageSource>
+                    <sf:SfTabItem.ImageSource>
                         <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Settings}}" />
-                    </tabView:SfTabItem.ImageSource>
-                </tabView:SfTabItem>
-            </tabView:SfTabView.Items>
-        </tabView:SfTabView>
+                    </sf:SfTabItem.ImageSource>
+                </sf:SfTabItem>
+            </sf:SfTabView.Items>
+        </sf:SfTabView>
     </ContentPage.Content>
 </pages:ServiceContentPage>
