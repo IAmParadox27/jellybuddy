@@ -6,6 +6,7 @@ using Jellybuddy.Dto;
 using Jellybuddy.Models;
 using Jellyfin.Api;
 using Newtonsoft.Json.Linq;
+using Rotorsoft.Maui;
 
 namespace Jellybuddy.ViewModels
 {
@@ -14,11 +15,36 @@ namespace Jellybuddy.ViewModels
         [ObservableProperty]
         private ObservableCollection<UserDto> m_users = new ObservableCollection<UserDto>();
 
+        [ObservableProperty]
+        private string? m_searchText;
+        
+        [ObservableProperty]
+        private CollectionViewSource m_usersViewSource;
+        
         private readonly IModel<DataCache> m_dataCache;
+        private readonly IUIContext m_uiContext;
 
-        public UsersViewModel(IModel<DataCache> dataCache)
+        public UsersViewModel(IModel<DataCache> dataCache, IUIContext uiContext)
         {
             m_dataCache = dataCache;
+            m_uiContext = uiContext;
+
+            UsersViewSource = new CollectionViewSource
+            {
+                Source = Users,
+                Filter = x =>
+                {
+                    if (x is UserDto user && !string.IsNullOrEmpty(SearchText))
+                    {
+                        if (!user.Name.ToLower().Contains(SearchText.ToLower()))
+                        {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
+            };
         }
         
         private async Task LoadUsersAsync(JellyfinServerConnection server)
@@ -44,12 +70,19 @@ namespace Jellybuddy.ViewModels
 
                 if (json != null)
                 {
-                    foreach (UserDto user in (JArray.Parse(json).ToObject<UserDto[]>() ?? Array.Empty<UserDto>()))
+                    UserDto[] usersResult = JArray.Parse(json).ToObject<UserDto[]>() ?? Array.Empty<UserDto>();
+                    
+                    foreach (UserDto user in usersResult)
                     {
                         Users.Add(user);
                     }
                 }
             }
+        }
+
+        partial void OnSearchTextChanged(string? value)
+        {
+            UsersViewSource.View.Refresh();
         }
 
         public void OnNavigatedTo()

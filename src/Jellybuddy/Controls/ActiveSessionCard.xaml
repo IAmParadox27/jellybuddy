@@ -17,12 +17,13 @@
         <converters:TicksToTimeConverter x:Key="ticksToTimeConverter" />
         <converters:SessionToProgressConverter x:Key="sessionToProgressConverter" />
         <converters:SessionToItemPosterConverter x:Key="sessionToItemProgressConverter" />
+        <converters:UserToProfileImageConverter x:Key="userToProfileImageConverter" />
     </Border.Resources>
     <StackLayout Orientation="Vertical">
         <Grid ColumnDefinitions="Auto,*,Auto">
             <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="50" WidthRequest="50" BackgroundColor="#8674BB" />
             <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="42" WidthRequest="42" BackgroundColor="White">
-                <Image Source="https://static.vecteezy.com/system/resources/thumbnails/024/983/914/small/simple-user-default-icon-free-png.png" Aspect="Center" Margin="5, 10, 5, 0"  />
+                <Image Source="{Binding UserId, Converter={StaticResource userToProfileImageConverter}}" Aspect="AspectFill"  />
             </Border>
             <Border StrokeThickness="0" Grid.Column="0" HorizontalOptions="End" VerticalOptions="End" Margin="10, 15" StrokeShape="RoundRectangle 6" HeightRequest="12" WidthRequest="12" BackgroundColor="#4CAF50" />
             

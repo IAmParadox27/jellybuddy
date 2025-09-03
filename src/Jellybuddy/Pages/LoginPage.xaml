@@ -13,13 +13,13 @@
                           FullExpandedRatio="0.8">
             <sf:SfBottomSheet.BottomSheetContent>
                 <StackLayout Orientation="Vertical">
-                    <sf:SfTextInputLayout Hint="Jellyfin URL">
+                    <sf:SfTextInputLayout InputViewPadding="15, 0" Hint="Jellyfin URL">
                         <Entry Text="{Binding Model.ServerUrl, Mode=TwoWay}" />
                     </sf:SfTextInputLayout>
-                    <sf:SfTextInputLayout Hint="Username">
+                    <sf:SfTextInputLayout InputViewPadding="15, 0" Hint="Username">
                         <Entry Text="{Binding Model.Username, Mode=TwoWay}" />
                     </sf:SfTextInputLayout>
-                    <sf:SfTextInputLayout Hint="Password">
+                    <sf:SfTextInputLayout InputViewPadding="15, 0" Hint="Password">
                         <Entry IsPassword="True" Text="{Binding Model.Password, Mode=TwoWay}" ReturnCommand="{Binding SignInCommand}" />
                     </sf:SfTextInputLayout>
                     <sf:SfButton Text="Sign In" Command="{Binding SignInCommand}" />

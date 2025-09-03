@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>CollectionViewSource.Maui</AssemblyName>
+    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('windows'))">net8.0-ios;</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">net8.0-android;net8.0-ios</TargetFrameworks>
+    <TargetFrameworks Condition="'$(Configuration)' == 'Debug' And $([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+	<RootNamespace>Rotorsoft.Maui</RootNamespace>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <PackageId>CollectionViewSource.Maui</PackageId>
+    <Authors>EORG-dev</Authors>
+    <PackageProjectUrl>https://github.com/EORG-Dev/CollectionViewSource.Maui</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/EORG-Dev/CollectionViewSource.Mauigit</RepositoryUrl>
+    <Description>A CollectionViewSource implementation for .net MAUI that supports filtering, sorting and grouping.</Description>
+    <PackageTags>collectionviewsource, .net maui</PackageTags>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<Version>1.0.1</Version>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <None Include="LICENSE" Pack="true" PackagePath="" />
+</ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.82" />
+  </ItemGroup>
+  
+</Project>

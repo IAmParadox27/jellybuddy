@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jellybuddy.Core", "Jellybud
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellybuddy", "Jellybuddy\Jellybuddy.csproj", "{A1757E39-6428-4700-85B3-30F9C10F0863}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External Libraries", "External Libraries", "{B9E10B97-BAC7-4FC3-A914-716D0E5BAC20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollectionViewSource.Maui", "..\external\CollectionViewSource.Maui\CollectionViewSource.Maui.csproj", "{04CF24D7-C760-4036-884F-EC10EF049B79}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,11 +27,18 @@ Global
 		{A1757E39-6428-4700-85B3-30F9C10F0863}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1757E39-6428-4700-85B3-30F9C10F0863}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A1757E39-6428-4700-85B3-30F9C10F0863}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{04CF24D7-C760-4036-884F-EC10EF049B79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04CF24D7-C760-4036-884F-EC10EF049B79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04CF24D7-C760-4036-884F-EC10EF049B79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04CF24D7-C760-4036-884F-EC10EF049B79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {34F2A884-D4F2-4175-8A90-78C5EFBFB457}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{04CF24D7-C760-4036-884F-EC10EF049B79} = {B9E10B97-BAC7-4FC3-A914-716D0E5BAC20}
 	EndGlobalSection
 EndGlobal

@@ -4,53 +4,94 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
              xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
-             xmlns:pullToRefresh="http://schemas.syncfusion.com/maui/toolkit"
+             xmlns:sf="http://schemas.syncfusion.com/maui/toolkit"
+             xmlns:converters="clr-namespace:Jellybuddy.Converters"
+             xmlns:icons="http://www.aathifmahir.com/dotnet/2022/maui/icons"
+             xmlns:contextMenu="clr-namespace:The49.Maui.ContextMenu;assembly=The49.Maui.ContextMenu"
              x:Class="Jellybuddy.Pages.TabPages.UsersTab"
              x:DataType="viewModels:UsersViewModel">
+    <ContentView.Resources>
+        <converters:UserToProfileImageConverter x:Key="userToProfileImageConverter" />
+    </ContentView.Resources>
     <ContentView.Content>
-        <pullToRefresh:SfPullToRefresh>
-            <pullToRefresh:SfPullToRefresh.PullableContent>
+        <sf:SfPullToRefresh>
+            <sf:SfPullToRefresh.PullableContent>
                 <ScrollView Padding="10">
                     <StackLayout Orientation="Vertical">
-                        <Label Text="Users" FontSize="32" FontAttributes="Bold" Margin="10, 20, 10, 10" />
-                        <CollectionView ItemsSource="{Binding Users}">
+                        <Label Text="Users" FontSize="28" FontAttributes="Bold" Margin="5" />
+                        <Grid ColumnDefinitions="*,5,Auto">
+                            <sf:SfTextInputLayout InputViewPadding="15, 0" Hint="Search...">
+                                <Entry Text="{Binding SearchText}" />
+                            </sf:SfTextInputLayout>
+                            <Button VerticalOptions="Center" Grid.Column="3" BackgroundColor="Transparent" BorderWidth="0" Padding="5" contextMenu:ContextMenu.ShowMenuOnClick="True">
+                                <Button.ImageSource>
+                                    <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Sort}}" />
+                                </Button.ImageSource>
+                                <contextMenu:ContextMenu.Menu>
+                                    <DataTemplate>
+                                        <contextMenu:Menu>
+                                            <contextMenu:Group>
+                                                <contextMenu:Action Title="Name" />
+                                                <contextMenu:Action Title="Last Active" />
+                                                <contextMenu:Action Title="Role" />
+                                            </contextMenu:Group>
+                                            <contextMenu:Group>
+                                                <contextMenu:Action Title="Ascending" />
+                                                <contextMenu:Action Title="Descending" />
+                                            </contextMenu:Group>
+                                        </contextMenu:Menu>
+                                    </DataTemplate>
+                                </contextMenu:ContextMenu.Menu>
+                            </Button>
+                        </Grid>
+                        <CollectionView ItemsSource="{Binding UsersViewSource.View}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="api:UserDto">
-                                    <Border Padding="10" BackgroundColor="#36343B" StrokeShape="RoundRectangle 10" StrokeThickness="0">
-                                        <StackLayout Orientation="Vertical">
-                                            <Grid ColumnDefinitions="Auto,*,Auto">
-                                                <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="42" WidthRequest="42" BackgroundColor="White">
-                                                    <Image Source="https://static.vecteezy.com/system/resources/thumbnails/024/983/914/small/simple-user-default-icon-free-png.png" Aspect="Center" Margin="5, 10, 5, 0"  />
-                                                </Border>
-                                                <StackLayout Grid.Column="1">
-                                                    <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
-                                                    <Label Text="User">
-                                                        <Label.Style>
-                                                            <Style TargetType="Label">
-                                                                <Style.Triggers>
-                                                                    <DataTrigger TargetType="Label" Binding="{Binding Policy.IsAdministrator}" Value="True">
-                                                                        <Setter Property="Text" Value="Administrator" />
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Label.Style>
-                                                    </Label>
-                                                    <Label Text="{Binding LastActivityDate}" />
-                                                    <Label Text="{Binding LastLoginDate}" />
+                                    <Grid RowDefinitions="*,10">
+                                        <Border Padding="10" BackgroundColor="#36343B" StrokeShape="RoundRectangle 10" StrokeThickness="0">
+                                            <StackLayout Orientation="Vertical">
+                                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                                    <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="50" WidthRequest="50" BackgroundColor="#8674BB" />
+                                                    <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="42" WidthRequest="42" BackgroundColor="White">
+                                                        <Image Source="{Binding Converter={StaticResource userToProfileImageConverter}}" Aspect="AspectFill" />
+                                                    </Border>
+                                                    
+                                                    <StackLayout Grid.Column="1">
+                                                        <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+                                                        <Label Text="User">
+                                                            <Label.Style>
+                                                                <Style TargetType="Label">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger TargetType="Label" Binding="{Binding Policy.IsAdministrator}" Value="True">
+                                                                            <Setter Property="Text" Value="Administrator" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Label.Style>
+                                                        </Label>
+                                                        <Label Text="{Binding LastActivityDate}" />
+                                                        <Label Text="{Binding LastLoginDate}" />
+                                                    </StackLayout>
+                                                    <Border StrokeThickness="0" BackgroundColor="#444DAF50" StrokeShape="RoundRectangle 15" HeightRequest="30" Grid.Column="2" Margin="0,0,5,0">
+                                                        <StackLayout VerticalOptions="Center" Orientation="Horizontal">
+                                                            <Border StrokeShape="RoundRectangle 7" Margin="7,0" StrokeThickness="0" HeightRequest="14" WidthRequest="14" BackgroundColor="#4DAF50" />
+                                                            <Label Text="Active" Margin="0,0,10,0" />
+                                                        </StackLayout>
+                                                    </Border>
+                                                </Grid>
+                                                <Rectangle HeightRequest="1" BackgroundColor="Gray" />
+                                                <StackLayout Orientation="Horizontal" FlowDirection="RightToLeft">
+                                                
                                                 </StackLayout>
-                                            </Grid>
-                                            <Rectangle HeightRequest="1" BackgroundColor="Gray" />
-                                            <StackLayout Orientation="Horizontal" FlowDirection="RightToLeft">
-                                            
                                             </StackLayout>
-                                        </StackLayout>
-                                    </Border>
+                                        </Border>
+                                    </Grid>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
                     </StackLayout>
                 </ScrollView>
-            </pullToRefresh:SfPullToRefresh.PullableContent>
-        </pullToRefresh:SfPullToRefresh>
+            </sf:SfPullToRefresh.PullableContent>
+        </sf:SfPullToRefresh>
     </ContentView.Content>
 </ContentView>
