@@ -59,7 +59,7 @@ namespace Jellybuddy.ViewModels
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(server.Url);
             client.DefaultRequestHeaders.Add("X-Emby-Authorization", 
-                $"MediaBrowser Client=\"JellyBuddy\", Device=\"MyDeviceName\", DeviceId=\"a7037817ace34ddc9d82385c63ac5f33\", Version=\"1.0.0\", Token=\"{server.AccessToken}\"");
+                $"MediaBrowser Client=\"JellyBuddy\", Device=\"{DeviceInfo.Current.Name}\", DeviceId=\"{server.DeviceId}\", Version=\"1.0.0\", Token=\"{server.AccessToken}\"");
             client.DefaultRequestHeaders.Add("Accept", "*/*");
 
             HttpResponseMessage response = await client.GetAsync("/Users");

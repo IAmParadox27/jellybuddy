@@ -73,7 +73,6 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.Maui.Graphics" Version="8.0.100" />
-        <PackageReference Include="Oscore.Maui.Biometric" Version="1.0.1" />
         <PackageReference Include="Syncfusion.Licensing" Version="30.2.7" />
         <PackageReference Include="Syncfusion.Maui.Toolkit" Version="1.0.6" />
         <PackageReference Include="The49.Maui.ContextMenu" Version="1.0.0-alpha1" />

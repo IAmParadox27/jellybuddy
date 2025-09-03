@@ -3,7 +3,6 @@ using CommunityToolkit.Maui;
 using Jellybuddy.Core.DependencyInjection;
 using Jellybuddy.Core.Library;
 using Jellybuddy.Services;
-using Maui.Biometric;
 using MauiIcons.Core;
 using MauiIcons.Material;
 using Microsoft.Extensions.Logging;
@@ -26,7 +25,6 @@ namespace Jellybuddy
 				.ConfigureSyncfusionToolkit()
 				.UseMauiApp<App>()
 				.UseMauiCommunityToolkit()
-				.UseBiometricAuthentication()
 				.UseMauiIconsCore()
 				.UseMaterialMauiIcons()
 				.UseViewModels()

@@ -15,5 +15,8 @@ namespace Jellybuddy.Dto
         
         [ObservableProperty]
         private string? m_accessToken;
+
+        [ObservableProperty]
+        private string m_deviceId;
     }
 }

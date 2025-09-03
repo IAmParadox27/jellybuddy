@@ -83,6 +83,12 @@ namespace Jellybuddy.Behaviors
             StartAnimation();
         }
 
+        protected override void OnDetachingFrom(StackLayout bindable)
+        {
+            base.OnDetachingFrom(bindable);
+            m_stack = null;
+        }
+
         /// <summary>
         /// This method is used for starting the marquee scrolling animation.
         /// </summary>
@@ -96,6 +102,7 @@ namespace Jellybuddy.Behaviors
         {
             if (m_stack == null)
             {
+                m_timer.Stop();
                 return;
             }
 

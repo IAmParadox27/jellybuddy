@@ -26,6 +26,9 @@ namespace Jellybuddy.ViewModels
         private ICommand m_signInCommand;
         
         [ObservableProperty]
+        private ICommand m_autoSignInCommand;
+        
+        [ObservableProperty]
         private bool m_isSheetOpen = false;
 
         private readonly INavigationManager<Page> m_navigationManager;
@@ -37,95 +40,84 @@ namespace Jellybuddy.ViewModels
             m_dataCache = dataCache;
             
             SignInCommand = new AsyncRelayCommand(OnSignIn);
+            AutoSignInCommand = new AsyncRelayCommand(OnAutoSignIn);
+            
+            AutoSignInCommand.Execute(null);
+        }
 
-            Application.Current?.Dispatcher.DispatchAsync(async () =>
+        private async Task OnAutoSignIn()
+        {
+            string? serverUrl = await SecureStorage.GetAsync("default_server_url");
+            string? deviceId = await SecureStorage.GetAsync("default_server_device_id");
+            string? token = await SecureStorage.GetAsync("default_server_token");
+            
+            if (serverUrl != null && deviceId != null && token != null)
             {
-                IEnumerable<JellyfinServerConnection> serverConnections = await GetCachedServerConnectionsAsync();
+                HttpClient client = new HttpClient();
+                client.BaseAddress = new Uri(serverUrl);
+                client.DefaultRequestHeaders.Add("X-Emby-Authorization",
+                    $"MediaBrowser Client=\"JellyBuddy\", Device=\"{DeviceInfo.Current.Name}\", DeviceId=\"{deviceId}\", Version=\"1.0.0\", Token=\"{token}\"");
+                client.DefaultRequestHeaders.Add("Accept", "*/*");
 
-                if (serverConnections.Any())
+                HttpResponseMessage response = await client.GetAsync("/Users/Me");
+                string json = await response.Content.ReadAsStringAsync();
+
+                try
                 {
-                    m_dataCache.Data.Servers.Clear();
-                    foreach (JellyfinServerConnection serverConnection in serverConnections)
-                    {
-                        // Probably want to reauth with the server here.
-                        serverConnection.AccessToken = await AuthenticateWithServer(serverConnection);
-                        
-                        m_dataCache.Data.Servers.Add(serverConnection);
-                    }
+                    JObject parseResult = JObject.Parse(json);
 
-                    if (serverConnections.All(x => x.AccessToken != null))
+                    m_dataCache.Data.Servers.Add(new JellyfinServerConnection()
                     {
-                        // This is where we'd want to do biometric authentication
-                        await m_navigationManager.NavigateToAsync<MainTabbedPage>();
-                        return;
-                    }
+                        Url = serverUrl,
+                        AccessToken = token,
+                        DeviceId = deviceId
+                    });
+
+                    await m_navigationManager.NavigateToAsync<MainTabbedPage>();
+                    return;
                 }
-                
-                IsSheetOpen = true;
-            });
+                catch
+                {
+                }
+            }
+            
+            IsSheetOpen = true;
         }
 
         private async Task OnSignIn()
         {
             // Make HTTP request to server
+            string deviceId = Guid.NewGuid().ToString().Replace("-", "");
+            
             HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("X-Emby-Authorization", 
-                $"MediaBrowser Client=\"JellyBuddy\", Device=\"MyDeviceName\", DeviceId=\"a7037817ace34ddc9d82385c63ac5f33\", Version=\"1.0.0\"");
+                $"MediaBrowser Client=\"JellyBuddy\", Device=\"{DeviceInfo.Current.Name}\", DeviceId=\"{deviceId}\", Version=\"1.0.0\"");
             httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
             
-            string? accessToken = await AuthenticateWithServer(new JellyfinServerConnection()
+            AuthenticationResult? authResult = await AuthenticateWithServer(new JellyfinServerConnection()
             {
                 Url = Model.ServerUrl,
                 Username = Model.Username,
-                Password = Model.Password
+                Password = Model.Password,
+                DeviceId = deviceId
             });
             
-            if (accessToken != null)
+            if (authResult != null)
             {
-                IList<JellyfinServerConnection> cachedServerConnections = (await GetCachedServerConnectionsAsync()).ToList();
+                await SecureStorage.SetAsync("default_server_url", Model.ServerUrl!);
+                await SecureStorage.SetAsync("default_server_device_id", deviceId);
+                await SecureStorage.SetAsync("default_server_token", authResult.AccessToken);
                 
-                JellyfinServerConnection? serverConnection = cachedServerConnections.FirstOrDefault(x => x.Url == Model.ServerUrl);
-
-                if (serverConnection == null)
+                JellyfinServerConnection? serverConnection = new JellyfinServerConnection
                 {
-                    serverConnection = new JellyfinServerConnection
-                    {
-                        Url = Model.ServerUrl,
-                        AccessToken = accessToken,
-                        Username = Model.Username,
-                        Password = Model.Password
-                    };
-                            
-                    cachedServerConnections.Add(serverConnection);
-                }
-                else
-                {
-                    serverConnection.AccessToken = accessToken;
-                    serverConnection.Username = Model.Username;
-                    serverConnection.Password = Model.Password;
-                }
+                    Url = Model.ServerUrl,
+                    AccessToken = authResult.AccessToken,
+                    Username = Model.Username,
+                    Password = Model.Password,
+                    DeviceId = deviceId
+                };
+                m_dataCache.Data.Servers.Add(serverConnection);
                 
-                try
-                {
-                    // Cache token
-                    // Securely store login details in secure storage for future use
-                    string? serializedServerConnections = JsonSerializer.Serialize(cachedServerConnections);
-                    await SecureStorage.Default.SetAsync("server_connections", serializedServerConnections);
-
-                    m_dataCache.Data.Servers.Clear();
-                    foreach (JellyfinServerConnection cachedServerConnection in cachedServerConnections)
-                    {
-                        m_dataCache.Data.Servers.Add(cachedServerConnection);
-                    }
-                }
-                catch (Exception)
-                {
-                    _ = 12;
-                    m_dataCache.Data.Servers.Add(serverConnection);
-                    // TODO: Probably use an alternative way to store the data.
-                    // Encryption algorithm into cache folder might be okay?
-                }
-
                 IsSheetOpen = false;
 
                 await m_navigationManager.NavigateToAsync<MainTabbedPage>();
@@ -137,32 +129,7 @@ namespace Jellybuddy.ViewModels
             }
         }
 
-        private async Task<IEnumerable<JellyfinServerConnection>> GetCachedServerConnectionsAsync()
-        {
-            string? storedServerConnectionsJson = null;
-
-            try
-            {
-                storedServerConnectionsJson = await SecureStorage.Default.GetAsync("server_connections");
-            }
-            catch (Exception)
-            {
-                _ = 12;
-                    
-                // TODO: Probably use `the` alternative way to read the data.
-                // Probably using an encryption algorithm from cache folder might be okay?
-            }
-
-            IEnumerable<JellyfinServerConnection> cachedServerConnections = Enumerable.Empty<JellyfinServerConnection>();
-            if (storedServerConnectionsJson != null)
-            {
-                cachedServerConnections = JsonSerializer.Deserialize<JellyfinServerConnection[]>(storedServerConnectionsJson) ?? cachedServerConnections;
-            }
-            
-            return cachedServerConnections;
-        }
-
-        private async Task<string?> AuthenticateWithServer(JellyfinServerConnection serverConnection)
+        private async Task<AuthenticationResult?> AuthenticateWithServer(JellyfinServerConnection serverConnection)
         {
             string requestJson = JsonSerializer.Serialize(new JellyfinAuthRequest
             {
@@ -174,10 +141,10 @@ namespace Jellybuddy.ViewModels
 
             HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("X-Emby-Authorization", 
-                $"MediaBrowser Client=\"JellyBuddy\", Device=\"MyDeviceName\", DeviceId=\"a7037817ace34ddc9d82385c63ac5f33\", Version=\"1.0.0\"");
+                $"MediaBrowser Client=\"JellyBuddy\", Device=\"{DeviceInfo.Current.Name}\", DeviceId=\"{serverConnection.DeviceId}\", Version=\"1.0.0\"");
             httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
-            
-            string? accessToken = null;
+
+            AuthenticationResult? authResult = null;
             try
             {
                 HttpResponseMessage response = await httpClient.PostAsync($"{Model.ServerUrl}/Users/AuthenticateByName", content);
@@ -186,11 +153,11 @@ namespace Jellybuddy.ViewModels
                 if (response.IsSuccessStatusCode)
                 {
                     string? responseJson = await response.Content.ReadAsStringAsync();
-                    AuthenticationResult? authResult = JObject.Parse(responseJson).ToObject<AuthenticationResult>();
+                    authResult = JObject.Parse(responseJson).ToObject<AuthenticationResult>();
 
-                    if (authResult?.User.Policy.IsAdministrator ?? false)
+                    if (!(authResult?.User.Policy.IsAdministrator ?? false))
                     {
-                        accessToken = authResult?.AccessToken;
+                        authResult = null;
                     }
                 }
             }
@@ -199,11 +166,7 @@ namespace Jellybuddy.ViewModels
                 _ = 12;
             }
             
-            return accessToken;
-        }
-
-        partial void OnIsSheetOpenChanged(bool oldValue, bool newValue)
-        {
+            return authResult;
         }
     }
 }
