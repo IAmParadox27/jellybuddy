@@ -2,8 +2,26 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sf="http://schemas.syncfusion.com/maui/toolkit"
+             xmlns:inputs="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
              x:Class="Jellybuddy.Pages.TabPages.SettingsTab">
     <ContentView.Content>
-        <Label Text="Settings!" />
+        <sf:SfBottomSheet IsOpen="False">
+            <ScrollView>
+                <StackLayout Orientation="Vertical" Margin="10, 0" Spacing="10">
+                    <Label Text="Settings" FontSize="28" FontAttributes="Bold" Margin="5, 5, 5, 20" />
+                    <inputs:SfComboBox IsClearButtonVisible="False" Padding="5" Background="#36343B" HeightRequest="50" ShowBorder="False" Placeholder="Select Server" />
+                    <Button Text="Add New Server Connection" />
+                </StackLayout>
+            </ScrollView>
+            <sf:SfBottomSheet.BottomSheetContent>
+                <StackLayout Orientation="Vertical" Spacing="10">
+                    <Entry Placeholder="Server URL" />
+                    <Entry Placeholder="Username" />
+                    <Entry Placeholder="Password" IsPassword="True" />
+                    <Button Text="Login and Add" />
+                </StackLayout>
+            </sf:SfBottomSheet.BottomSheetContent>
+        </sf:SfBottomSheet>
     </ContentView.Content>
 </ContentView>

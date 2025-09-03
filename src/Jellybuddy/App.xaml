@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Jellybuddy"
              xmlns:themes="http://schemas.syncfusion.com/maui/toolkit"
+             xmlns:sfThemes="clr-namespace:Syncfusion.Maui.Themes;assembly=Syncfusion.Maui.Core"
              x:Class="Jellybuddy.App"
              UserAppTheme="Dark">
     <Application.Resources>
@@ -11,6 +12,7 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
                 
+                <sfThemes:SyncfusionThemeResourceDictionary VisualTheme="MaterialDark" />
                 <themes:SyncfusionThemeResourceDictionary VisualTheme="MaterialDark" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
