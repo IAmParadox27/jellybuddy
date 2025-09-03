@@ -71,7 +71,7 @@ namespace Jellybuddy.Behaviors
         public MarqueeBehavior()
         {
             m_timer = Application.Current.Dispatcher.CreateTimer();
-            m_timer.Interval = TimeSpan.FromMilliseconds(50);
+            m_timer.Interval = TimeSpan.FromMilliseconds(1);
             m_timer.Tick += Timer_OnTick;
         }
 
@@ -115,7 +115,7 @@ namespace Jellybuddy.Behaviors
 
             if (Direction != FlowDirection.MatchParent)
             {
-                m_stack.TranslationX -= Direction == FlowDirection.LeftToRight ? Speed : -Speed;
+                m_stack.TranslationX -= (Direction == FlowDirection.LeftToRight ? Speed : -Speed) / 50f;
                 
                 if (Direction == FlowDirection.LeftToRight)
                 {

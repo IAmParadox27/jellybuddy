@@ -79,7 +79,7 @@
                     <!-- <Entry Text="{Binding NowPlayingItem.SeriesId, Mode=OneWay}" /> -->
                     <StackLayout Orientation="Horizontal">
                         <StackLayout.Behaviors>
-                            <behaviors:MarqueeBehavior DirectionChangePauseDuration="1" Speed="2" ScrollOverflow="0" PageWidth="{Binding Path=Width, Source={x:Reference cardDetails}}" />
+                            <behaviors:MarqueeBehavior DirectionChangePauseDuration="1" Speed="5" ScrollOverflow="0" PageWidth="{Binding Path=Width, Source={x:Reference cardDetails}}" />
                         </StackLayout.Behaviors>
                         <Label VerticalOptions="Center" Text="Title" FontSize="18" FontAttributes="Bold" TextColor="#E4DFE3">
                             <Label.Style>
