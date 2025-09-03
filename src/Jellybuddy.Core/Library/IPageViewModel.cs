@@ -1,4 +1,4 @@
-﻿namespace Jellybuddy
+﻿namespace Jellybuddy.Core.Library
 {
     public interface IPageViewModel
     {
