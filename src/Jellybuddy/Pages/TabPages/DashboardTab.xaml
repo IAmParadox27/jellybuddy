@@ -15,7 +15,7 @@
             <sf:SfPullToRefresh.PullableContent>
                 <ScrollView Padding="10">
                     <StackLayout Orientation="Vertical">
-                        <Label Text="Active Sessions" FontSize="32" FontAttributes="Bold" Margin="10, 20, 10, 10" />
+                        <Label Text="Active Sessions" FontSize="28" FontAttributes="Bold" Margin="5" />
                         <CollectionView ItemsSource="{Binding AllSessions}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="api:SessionInfoDto">
