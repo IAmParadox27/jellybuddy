@@ -7,6 +7,7 @@
              xmlns:sf="http://schemas.syncfusion.com/maui/toolkit"
              x:Class="Jellybuddy.Pages.MainTabbedPage"
              x:DataType="viewModels:TabViewViewModel"
+             HideSoftInputOnTapped="True"
              >
              <!-- CurrentPageChanged="MainTabbedPage_OnCurrentPageChanged" -->
     <ContentPage.Content>

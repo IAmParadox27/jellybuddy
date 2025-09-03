@@ -4,7 +4,8 @@
              xmlns:pages="using:Jellybuddy.Pages"
              xmlns:sf="http://schemas.syncfusion.com/maui/toolkit"
              x:Class="Jellybuddy.LoginPage"
-             x:DataType="viewModels:LoginFormViewModel">
+             x:DataType="viewModels:LoginFormViewModel"
+             HideSoftInputOnTapped="True">
     <ScrollView>
         <sf:SfBottomSheet IsOpen="{Binding IsSheetOpen, Mode=OneWay}" 
                           CollapseOnOverlayTap="True" CollapsedHeight="670" EnableSwiping="False" 

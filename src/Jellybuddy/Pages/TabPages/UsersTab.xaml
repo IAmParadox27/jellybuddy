@@ -46,7 +46,7 @@
                                 </contextMenu:ContextMenu.Menu>
                             </Button>
                         </Grid>
-                        <CollectionView ItemsSource="{Binding UsersViewSource.View}">
+                        <CollectionView VerticalScrollBarVisibility="Never" ItemsSource="{Binding UsersViewSource.View}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="api:UserDto">
                                     <Grid RowDefinitions="*,10">

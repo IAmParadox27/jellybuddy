@@ -16,7 +16,7 @@
                 <ScrollView Padding="10">
                     <StackLayout Orientation="Vertical">
                         <Label Text="Active Sessions" FontSize="28" FontAttributes="Bold" Margin="5" />
-                        <CollectionView ItemsSource="{Binding AllSessions}">
+                        <CollectionView VerticalScrollBarVisibility="Never" ItemsSource="{Binding AllSessions}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="api:SessionInfoDto">
                                     <controls:ActiveSessionCard BindingContext="{Binding}" />

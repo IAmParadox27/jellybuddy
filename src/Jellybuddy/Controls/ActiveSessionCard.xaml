@@ -1,143 +1,146 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<Grid xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
              xmlns:converters="clr-namespace:Jellybuddy.Converters"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:behaviors="clr-namespace:Jellybuddy.Behaviors"
              x:Class="Jellybuddy.Controls.ActiveSessionCard"
-             StrokeThickness="0" 
-             BackgroundColor="#36343B" 
              FlexLayout.Basis="100%" 
-             Margin="5" 
-             StrokeShape="RoundRectangle 15"
              x:Name="card"
-             x:DataType="api:SessionInfoDto">
-    <Border.Resources>
-        <toolkit:IsNullConverter x:Key="isNullConverter" />
-        <converters:TicksToTimeConverter x:Key="ticksToTimeConverter" />
-        <converters:SessionToProgressConverter x:Key="sessionToProgressConverter" />
-        <converters:SessionToItemPosterConverter x:Key="sessionToItemProgressConverter" />
-        <converters:UserToProfileImageConverter x:Key="userToProfileImageConverter" />
-    </Border.Resources>
-    <StackLayout Orientation="Vertical">
-        <Grid ColumnDefinitions="Auto,*,Auto">
-            <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="50" WidthRequest="50" BackgroundColor="#8674BB" />
-            <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="42" WidthRequest="42" BackgroundColor="White">
-                <Image Source="{Binding UserId, Converter={StaticResource userToProfileImageConverter}}" Aspect="AspectFill"  />
-            </Border>
-            <Border StrokeThickness="0" Grid.Column="0" HorizontalOptions="End" VerticalOptions="End" Margin="10, 15" StrokeShape="RoundRectangle 6" HeightRequest="12" WidthRequest="12" BackgroundColor="#4CAF50" />
-            
-            <StackLayout Orientation="Vertical" Grid.Column="1" Margin="10">
-                <Label Text="{Binding UserName}" FontAttributes="Bold" TextColor="#E4DFE3" />
-                <Label Text="{Binding DeviceName}" TextColor="#B1ABB6" />
-                <Label Text="{Binding Client}" TextColor="#B1ABB6" />
-            </StackLayout>
-        </Grid>
-        <Grid ColumnDefinitions="Auto,*" Margin="10">
-            <StackLayout Orientation="Vertical" Margin="10,0,20,5">
-                <Border BackgroundColor="#49454F" StrokeShape="RoundRectangle 10 10 0 0" StrokeThickness="0" HeightRequest="107" WidthRequest="72">
-                    <Grid>
-                        <Image Source="{Binding Converter={StaticResource sessionToItemProgressConverter}}" Aspect="AspectFill" />
-                        <Border StrokeThickness="0" BackgroundColor="#55000000" />
-                    </Grid>
+             x:DataType="api:SessionInfoDto"
+             RowDefinitions="*, 10">
+    <Border
+        StrokeThickness="0" 
+        Margin="5" 
+        StrokeShape="RoundRectangle 15"
+        BackgroundColor="#36343B" >
+        <Border.Resources>
+            <toolkit:IsNullConverter x:Key="isNullConverter" />
+            <converters:TicksToTimeConverter x:Key="ticksToTimeConverter" />
+            <converters:SessionToProgressConverter x:Key="sessionToProgressConverter" />
+            <converters:SessionToItemPosterConverter x:Key="sessionToItemProgressConverter" />
+            <converters:UserToProfileImageConverter x:Key="userToProfileImageConverter" />
+        </Border.Resources>
+        <StackLayout Orientation="Vertical">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="50" WidthRequest="50" BackgroundColor="#8674BB" />
+                <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="42" WidthRequest="42" BackgroundColor="White">
+                    <Image Source="{Binding UserId, Converter={StaticResource userToProfileImageConverter}}" Aspect="AspectFill"  />
                 </Border>
-                <Border BackgroundColor="#4CA550" StrokeShape="RoundRectangle 0 0 10 10" StrokeThickness="0" HeightRequest="20" WidthRequest="72">
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Style.Triggers>
-                                <DataTrigger TargetType="Border" Binding="{Binding PlayState.PlayMethod}" Value="{x:Static api:PlayerStateInfoPlayMethod.Transcode}">
-                                    <Setter Property="BackgroundColor" Value="#ED9008" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                    <Label FontSize="10" VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" HorizontalTextAlignment="Center" 
-                           TextTransform="Uppercase" FontAttributes="Bold" CharacterSpacing="1" TextColor="White">
-                        <Label.Style>
-                            <Style TargetType="Label">
+                <Border StrokeThickness="0" Grid.Column="0" HorizontalOptions="End" VerticalOptions="End" Margin="10, 15" StrokeShape="RoundRectangle 6" HeightRequest="12" WidthRequest="12" BackgroundColor="#4CAF50" />
+                
+                <StackLayout Orientation="Vertical" Grid.Column="1" Margin="10">
+                    <Label Text="{Binding UserName}" FontAttributes="Bold" TextColor="#E4DFE3" />
+                    <Label Text="{Binding DeviceName}" TextColor="#B1ABB6" />
+                    <Label Text="{Binding Client}" TextColor="#B1ABB6" />
+                </StackLayout>
+            </Grid>
+            <Grid ColumnDefinitions="Auto,*" Margin="10">
+                <StackLayout Orientation="Vertical" Margin="10,0,20,5">
+                    <Border BackgroundColor="#49454F" StrokeShape="RoundRectangle 10 10 0 0" StrokeThickness="0" HeightRequest="107" WidthRequest="72">
+                        <Grid>
+                            <Image Source="{Binding Converter={StaticResource sessionToItemProgressConverter}}" Aspect="AspectFill" />
+                            <Border StrokeThickness="0" BackgroundColor="#55000000" />
+                        </Grid>
+                    </Border>
+                    <Border BackgroundColor="#4CA550" StrokeShape="RoundRectangle 0 0 10 10" StrokeThickness="0" HeightRequest="20" WidthRequest="72">
+                        <Border.Style>
+                            <Style TargetType="Border">
                                 <Style.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding PlayState.PlayMethod}" Value="{x:Static api:PlayerStateInfoPlayMethod.Transcode}">
-                                        <Setter Property="Text" Value="Transcode" />
-                                    </DataTrigger>
-                                    <DataTrigger TargetType="Label" Binding="{Binding PlayState.PlayMethod}" Value="{x:Static api:PlayerStateInfoPlayMethod.DirectPlay}">
-                                        <Setter Property="Text" Value="Direct" />
-                                    </DataTrigger>
-                                    <DataTrigger TargetType="Label" Binding="{Binding PlayState.PlayMethod}" Value="{x:Static api:PlayerStateInfoPlayMethod.DirectStream}">
-                                        <Setter Property="Text" Value="Direct" />
+                                    <DataTrigger TargetType="Border" Binding="{Binding PlayState.PlayMethod}" Value="{x:Static api:PlayerStateInfoPlayMethod.Transcode}">
+                                        <Setter Property="BackgroundColor" Value="#ED9008" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </Label.Style>
-                    </Label>
-                </Border>
-            </StackLayout>
-            <StackLayout Orientation="Vertical" Grid.Column="1" Margin="0, 8" x:Name="cardDetails" IsClippedToBounds="True">
-                <!-- <Entry Text="{Binding NowPlayingItem.SeriesId, Mode=OneWay}" /> -->
-                <StackLayout Orientation="Horizontal">
-                    <StackLayout.Behaviors>
-                        <behaviors:MarqueeBehavior DirectionChangePauseDuration="1" Speed="2" ScrollOverflow="0" PageWidth="{Binding Path=Width, Source={x:Reference cardDetails}}" />
-                    </StackLayout.Behaviors>
-                    <Label VerticalOptions="Center" Text="Title" FontSize="18" FontAttributes="Bold" TextColor="#E4DFE3">
-                        <Label.Style>
-                            <Style TargetType="Label">
-                                <Style.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding NowPlayingItem.OriginalTitle, Converter={StaticResource isNullConverter}}" Value="False">
-                                        <Setter Property="Text" Value="{Binding NowPlayingItem.OriginalTitle}" />
-                                    </DataTrigger>
-                                    <DataTrigger TargetType="Label" Binding="{Binding NowPlayingItem.SeriesName, Converter={StaticResource isNullConverter}}" Value="False">
-                                        <Setter Property="Text" Value="{Binding NowPlayingItem.SeriesName}" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Label.Style>
-                    </Label>
-                    <StackLayout Orientation="Horizontal" IsVisible="False">
-                        <StackLayout.Style>
-                            <Style TargetType="StackLayout">
-                                <Style.Triggers>
-                                    <DataTrigger TargetType="StackLayout" Binding="{Binding NowPlayingItem.Type}" Value="{x:Static api:BaseItemDtoType.Episode}">
-                                        <Setter Property="IsVisible" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </StackLayout.Style>
-                        <Label VerticalOptions="Center" Text="•" Margin="10, 0" FontSize="24" />
-                        <Label VerticalOptions="Center" Text="" FontSize="18" FontAttributes="Bold" TextColor="#E4DFE3">
+                        </Border.Style>
+                        <Label FontSize="10" VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" HorizontalTextAlignment="Center" 
+                               TextTransform="Uppercase" FontAttributes="Bold" CharacterSpacing="1" TextColor="White">
                             <Label.Style>
                                 <Style TargetType="Label">
                                     <Style.Triggers>
-                                        <DataTrigger TargetType="Label" Binding="{Binding NowPlayingItem.Name, Converter={StaticResource isNullConverter}}" Value="False">
-                                            <Setter Property="Text" Value="{Binding NowPlayingItem.Name}" />
+                                        <DataTrigger TargetType="Label" Binding="{Binding PlayState.PlayMethod}" Value="{x:Static api:PlayerStateInfoPlayMethod.Transcode}">
+                                            <Setter Property="Text" Value="Transcode" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding PlayState.PlayMethod}" Value="{x:Static api:PlayerStateInfoPlayMethod.DirectPlay}">
+                                            <Setter Property="Text" Value="Direct" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding PlayState.PlayMethod}" Value="{x:Static api:PlayerStateInfoPlayMethod.DirectStream}">
+                                            <Setter Property="Text" Value="Direct" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Label.Style>
                         </Label>
+                    </Border>
+                </StackLayout>
+                <StackLayout Orientation="Vertical" Grid.Column="1" Margin="0, 8" x:Name="cardDetails" IsClippedToBounds="True">
+                    <!-- <Entry Text="{Binding NowPlayingItem.SeriesId, Mode=OneWay}" /> -->
+                    <StackLayout Orientation="Horizontal">
+                        <StackLayout.Behaviors>
+                            <behaviors:MarqueeBehavior DirectionChangePauseDuration="1" Speed="2" ScrollOverflow="0" PageWidth="{Binding Path=Width, Source={x:Reference cardDetails}}" />
+                        </StackLayout.Behaviors>
+                        <Label VerticalOptions="Center" Text="Title" FontSize="18" FontAttributes="Bold" TextColor="#E4DFE3">
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding NowPlayingItem.OriginalTitle, Converter={StaticResource isNullConverter}}" Value="False">
+                                            <Setter Property="Text" Value="{Binding NowPlayingItem.OriginalTitle}" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding NowPlayingItem.SeriesName, Converter={StaticResource isNullConverter}}" Value="False">
+                                            <Setter Property="Text" Value="{Binding NowPlayingItem.SeriesName}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <StackLayout Orientation="Horizontal" IsVisible="False">
+                            <StackLayout.Style>
+                                <Style TargetType="StackLayout">
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding NowPlayingItem.Type}" Value="{x:Static api:BaseItemDtoType.Episode}">
+                                            <Setter Property="IsVisible" Value="True" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackLayout.Style>
+                            <Label VerticalOptions="Center" Text="•" Margin="10, 0" FontSize="24" />
+                            <Label VerticalOptions="Center" Text="" FontSize="18" FontAttributes="Bold" TextColor="#E4DFE3">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding NowPlayingItem.Name, Converter={StaticResource isNullConverter}}" Value="False">
+                                                <Setter Property="Text" Value="{Binding NowPlayingItem.Name}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
+                        </StackLayout>
                     </StackLayout>
+                    <StackLayout Orientation="Horizontal" Spacing="6" Margin="0, 5">
+                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="#49454F" Padding="6, 2">
+                            <Label Text="1080p" FontAttributes="Bold" TextColor="#C9C3CF" />
+                        </Border>
+                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="#49454F" Padding="6, 2">
+                            <Label Text="H264" FontAttributes="Bold" TextColor="#C9C3CF" />
+                        </Border>
+                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="#49454F" Padding="6, 2">
+                            <Label Text="AAC" FontAttributes="Bold" TextColor="#C9C3CF" />
+                        </Border>
+                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="#49454F" Padding="6, 2">
+                            <Label Text="MKV" FontAttributes="Bold" TextColor="#C9C3CF" />
+                        </Border>
+                    </StackLayout>
+                    <Grid ColumnDefinitions="*, 5, *" RowDefinitions="Auto,Auto" Margin="0, 10">
+                        <ProgressBar Progress="{Binding Converter={StaticResource sessionToProgressConverter}}" Grid.ColumnSpan="3" ProgressColor="#8775BB" Margin="0" />
+                        
+                        <Label FontSize="10" Text="{Binding PlayState.PositionTicks, Converter={StaticResource ticksToTimeConverter}}" Grid.Row="1" TextColor="#B9B3BE" FontAttributes="Bold" Margin="0, 2" />
+                        <Label FontSize="10" Text="{Binding NowPlayingItem.RunTimeTicks, Converter={StaticResource ticksToTimeConverter}}" Grid.Row="1" Grid.Column="2" HorizontalOptions="End" TextColor="#B9B3BE" FontAttributes="Bold" Margin="0, 2" />
+                    </Grid>
                 </StackLayout>
-                <StackLayout Orientation="Horizontal" Spacing="6" Margin="0, 5">
-                    <Border StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="#49454F" Padding="6, 2">
-                        <Label Text="1080p" FontAttributes="Bold" TextColor="#C9C3CF" />
-                    </Border>
-                    <Border StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="#49454F" Padding="6, 2">
-                        <Label Text="H264" FontAttributes="Bold" TextColor="#C9C3CF" />
-                    </Border>
-                    <Border StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="#49454F" Padding="6, 2">
-                        <Label Text="AAC" FontAttributes="Bold" TextColor="#C9C3CF" />
-                    </Border>
-                    <Border StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="#49454F" Padding="6, 2">
-                        <Label Text="MKV" FontAttributes="Bold" TextColor="#C9C3CF" />
-                    </Border>
-                </StackLayout>
-                <Grid ColumnDefinitions="*, 5, *" RowDefinitions="Auto,Auto" Margin="0, 10">
-                    <ProgressBar Progress="{Binding Converter={StaticResource sessionToProgressConverter}}" Grid.ColumnSpan="3" ProgressColor="#8775BB" Margin="0" />
-                    
-                    <Label FontSize="10" Text="{Binding PlayState.PositionTicks, Converter={StaticResource ticksToTimeConverter}}" Grid.Row="1" TextColor="#B9B3BE" FontAttributes="Bold" Margin="0, 2" />
-                    <Label FontSize="10" Text="{Binding NowPlayingItem.RunTimeTicks, Converter={StaticResource ticksToTimeConverter}}" Grid.Row="1" Grid.Column="2" HorizontalOptions="End" TextColor="#B9B3BE" FontAttributes="Bold" Margin="0, 2" />
-                </Grid>
-            </StackLayout>
-        </Grid>
-    </StackLayout>
-</Border>
+            </Grid>
+        </StackLayout>
+    </Border>
+</Grid>
