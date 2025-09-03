@@ -1,5 +1,8 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Jellybuddy.Core.DependencyInjection;
 using Jellybuddy.Core.Library;
 using Jellybuddy.Dto;
@@ -10,6 +13,13 @@ using Rotorsoft.Maui;
 
 namespace Jellybuddy.ViewModels
 {
+    public enum UserSortCategory
+    {
+        Name,
+        LastActive,
+        Role
+    }
+    
     public partial class UsersViewModel : ObservableObject, IPageViewModel
     {
         [ObservableProperty]
@@ -20,9 +30,16 @@ namespace Jellybuddy.ViewModels
         
         [ObservableProperty]
         private CollectionViewSource m_usersViewSource;
+
+        [ObservableProperty]
+        private ICommand m_changeSortCategory;
+
+        [ObservableProperty]
+        private ICommand m_changeSortDirection;
         
         private readonly IModel<DataCache> m_dataCache;
         private readonly IUIContext m_uiContext;
+        
 
         public UsersViewModel(IModel<DataCache> dataCache, IUIContext uiContext)
         {
@@ -45,8 +62,32 @@ namespace Jellybuddy.ViewModels
                     return true;
                 }
             };
+
+            ChangeSortCategory = new RelayCommand<UserSortCategory>(OnChangeSortCategory);
+            ChangeSortDirection = new RelayCommand<ListSortDirection>(OnChangeSortDirection);
         }
-        
+
+        private void OnChangeSortDirection(ListSortDirection obj)
+        {
+            SortDescription sortDescription = UsersViewSource.SortDescriptions.First();
+            
+            UsersViewSource.SortDescriptions.Clear();
+            UsersViewSource.SortDescriptions.Add(new SortDescription(sortDescription.PropertyName, obj));
+        }
+
+        private void OnChangeSortCategory(UserSortCategory obj)
+        {
+            SortDescription sortDescription = UsersViewSource.SortDescriptions.First();
+            
+            UsersViewSource.SortDescriptions.Clear();
+            UsersViewSource.SortDescriptions.Add(new SortDescription(obj switch
+            {
+                UserSortCategory.Name => nameof(UserDto.Name),
+                UserSortCategory.LastActive => nameof(UserDto.LastActivityDate),
+                UserSortCategory.Role => $"{nameof(UserDto.Policy)}.{nameof(UserPolicy.IsAdministrator)}"
+            }, sortDescription.Direction));
+        }
+
         private async Task LoadUsersAsync(JellyfinServerConnection server)
         {
             if (server.Url == null)

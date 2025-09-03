@@ -8,6 +8,7 @@
              xmlns:converters="clr-namespace:Jellybuddy.Converters"
              xmlns:icons="http://www.aathifmahir.com/dotnet/2022/maui/icons"
              xmlns:contextMenu="clr-namespace:The49.Maui.ContextMenu;assembly=The49.Maui.ContextMenu"
+             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System.ComponentModel.TypeConverter"
              x:Class="Jellybuddy.Pages.TabPages.UsersTab"
              x:DataType="viewModels:UsersViewModel">
     <ContentView.Resources>
@@ -33,13 +34,13 @@
                                     <DataTemplate>
                                         <contextMenu:Menu>
                                             <contextMenu:Group>
-                                                <contextMenu:Action Title="Name" />
-                                                <contextMenu:Action Title="Last Active" />
-                                                <contextMenu:Action Title="Role" />
+                                                <contextMenu:Action Title="Name" Command="{Binding ChangeSortCategory}" CommandParameter="{x:Static viewModels:UserSortCategory.Name}" />
+                                                <contextMenu:Action Title="Last Active" Command="{Binding ChangeSortCategory}" CommandParameter="{x:Static viewModels:UserSortCategory.LastActive}" />
+                                                <contextMenu:Action Title="Role" Command="{Binding ChangeSortCategory}" CommandParameter="{x:Static viewModels:UserSortCategory.Role}" />
                                             </contextMenu:Group>
                                             <contextMenu:Group>
-                                                <contextMenu:Action Title="Ascending" />
-                                                <contextMenu:Action Title="Descending" />
+                                                <contextMenu:Action Title="Ascending" Command="{Binding ChangeSortDirection}" CommandParameter="{x:Static componentModel:ListSortDirection.Ascending}" />
+                                                <contextMenu:Action Title="Descending" Command="{Binding ChangeSortDirection}" CommandParameter="{x:Static componentModel:ListSortDirection.Descending}" />
                                             </contextMenu:Group>
                                         </contextMenu:Menu>
                                     </DataTemplate>
