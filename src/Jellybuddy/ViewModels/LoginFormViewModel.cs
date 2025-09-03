@@ -56,12 +56,11 @@ namespace Jellybuddy.ViewModels
                     {
                         // This is where we'd want to do biometric authentication
                         await m_navigationManager.NavigateToAsync<MainTabbedPage>();
-                    }
-                    else
-                    {
-                        IsSheetOpen = true;
+                        return;
                     }
                 }
+                
+                IsSheetOpen = true;
             });
         }
 
