@@ -121,7 +121,7 @@ namespace Jellybuddy.ViewModels
                 catch (Exception)
                 {
                     _ = 12;
-                    
+                    m_dataCache.Data.Servers.Add(serverConnection);
                     // TODO: Probably use an alternative way to store the data.
                     // Encryption algorithm into cache folder might be okay?
                 }

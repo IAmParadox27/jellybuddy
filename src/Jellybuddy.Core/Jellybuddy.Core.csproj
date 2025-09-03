@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('windows'))">net8.0-ios;</TargetFrameworks>
+        <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">net8.0-android;net8.0-ios</TargetFrameworks>
+        <TargetFrameworks Condition="'$(Configuration)' == 'Debug' And $([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         
@@ -51,10 +53,10 @@
             Name="GenerateJellyfinApiModels" 
             BeforeTargets="CoreCompile" 
             Inputs="$(JellyfinServerUrl)" 
-            Outputs="$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs">
-        <Exec Command="$(NSwagExe) openapi2csclient /input:$(JellyfinServerUrl)/api-docs/openapi.json /classname:Models /namespace:Jellyfin.Api /output:$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs /GenerateDtoTypes:true /GenerateClientClasses:false /classstyle:inpc" ConsoleToMsBuild="true" />
+            Outputs="$(MSBuildProjectDirectory)/Jellyfin.Api.Models.g.cs">
+        <Exec Command="$(NSwagExe_Net80) openapi2csclient /input:$(JellyfinServerUrl)/api-docs/openapi.json /classname:Models /namespace:Jellyfin.Api /output:$(MSBuildProjectDirectory)/Jellyfin.Api.Models.g.cs /GenerateDtoTypes:true /GenerateClientClasses:false /classstyle:inpc" ConsoleToMsBuild="true" />
     </Target>
     <Target Name="ForceReGenerationOnRebuild" AfterTargets="CoreClean">
-        <Delete Files="$(MSBuildProjectDirectory)\Jellyfin.Api.Models.g.cs" />
+        <Delete Files="$(MSBuildProjectDirectory)/Jellyfin.Api.Models.g.cs" />
     </Target>
 </Project>
