@@ -7,7 +7,10 @@
              x:Class="Jellybuddy.LoginPage"
              x:DataType="viewModels:LoginFormViewModel">
     <ScrollView>
-        <sf:SfBottomSheet BackgroundColor="#36343B" IsOpen="{Binding IsSheetOpen, Mode=OneWay}" CollapseOnOverlayTap="True" CollapsedHeight="670" EnableSwiping="False" ShowGrabber="False" IsModal="True" AllowedState="FullExpanded" State="FullExpanded" FullExpandedRatio="0.8">
+        <sf:SfBottomSheet IsOpen="{Binding IsSheetOpen, Mode=OneWay}" 
+                          CollapseOnOverlayTap="True" CollapsedHeight="670" EnableSwiping="False" 
+                          ShowGrabber="False" IsModal="True" AllowedState="FullExpanded" State="FullExpanded" 
+                          FullExpandedRatio="0.8">
             <sf:SfBottomSheet.BottomSheetContent>
                 <StackLayout Orientation="Vertical">
                     <sf:SfTextInputLayout Hint="Jellyfin URL">

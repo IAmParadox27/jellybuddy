@@ -17,13 +17,13 @@
                 <tabView:SfTabItem Header="Dashboard" ImagePosition="Top">
                     <tabPages:DashboardTab BindingContext="{Binding ActiveSessionsViewModel.Model}" />
                     <tabView:SfTabItem.ImageSource>
-                        <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Subscriptions}, IconColor=Black}" />
+                        <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Subscriptions}}" />
                     </tabView:SfTabItem.ImageSource>
                 </tabView:SfTabItem>
                 <tabView:SfTabItem Header="Users" ImagePosition="Top">
                     <tabPages:UsersTab BindingContext="{Binding UsersViewModel.Model}" />
                     <tabView:SfTabItem.ImageSource>
-                        <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.People}, IconColor=Black}" />
+                        <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.People}}" />
                     </tabView:SfTabItem.ImageSource>
                 </tabView:SfTabItem>
             </tabView:SfTabView.Items>
