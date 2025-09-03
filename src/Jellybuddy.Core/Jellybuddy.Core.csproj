@@ -5,7 +5,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         
-        <JellyfinServerUrl>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)\..\..\JellyfinServerUrl.txt"))</JellyfinServerUrl>
+        <HasJellyfinServerUrl>$([System.IO.File]::Exists("$(MSBuildProjectDirectory)\..\..\JellyfinServerUrl.txt"))</HasJellyfinServerUrl>
+        <JellyfinServerUrl Condition="$(HasJellyfinServerUrl)">$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)\..\..\JellyfinServerUrl.txt"))</JellyfinServerUrl>
     </PropertyGroup>
 
     <ItemGroup>
