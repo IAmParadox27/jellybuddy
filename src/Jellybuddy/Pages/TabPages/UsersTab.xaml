@@ -19,11 +19,13 @@
                 <ScrollView Padding="10">
                     <StackLayout Orientation="Vertical">
                         <Label Text="Users" FontSize="28" FontAttributes="Bold" Margin="5" />
-                        <Grid ColumnDefinitions="*,5,Auto">
-                            <sf:SfTextInputLayout InputViewPadding="15, 0" Hint="Search...">
-                                <Entry Text="{Binding SearchText}" />
-                            </sf:SfTextInputLayout>
-                            <Button VerticalOptions="Center" Grid.Column="3" BackgroundColor="Transparent" BorderWidth="0" Padding="5" contextMenu:ContextMenu.ShowMenuOnClick="True">
+                        <Grid ColumnDefinitions="*,5,Auto" Margin="0, 0, 0, 20">
+                            <!-- <sf:SfTextInputLayout InputViewPadding="15, 0" Hint="Search..." VerticalOptions="Center"> -->
+                            <!-- </sf:SfTextInputLayout> -->
+                            <Border StrokeThickness="0" StrokeShape="RoundRectangle 10" BackgroundColor="#36343B">
+                                <Entry Margin="10, 0" ClearButtonVisibility="WhileEditing" Text="{Binding SearchText}" Placeholder="Search..." />
+                            </Border>
+                            <Button VerticalOptions="Start" Grid.Column="3" BackgroundColor="#36343B" BorderWidth="0" Padding="5" contextMenu:ContextMenu.ShowMenuOnClick="True">
                                 <Button.ImageSource>
                                     <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Sort}}" />
                                 </Button.ImageSource>
