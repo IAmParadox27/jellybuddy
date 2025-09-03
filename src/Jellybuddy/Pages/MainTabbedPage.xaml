@@ -20,17 +20,31 @@
                         <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Subscriptions}}" />
                     </tabView:SfTabItem.ImageSource>
                 </tabView:SfTabItem>
+                <tabView:SfTabItem Header="Library" ImagePosition="Top">
+                    <tabPages:LibraryTab />
+                    <tabView:SfTabItem.ImageSource>
+                        <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.LibraryBooks}}" />
+                    </tabView:SfTabItem.ImageSource>
+                </tabView:SfTabItem>
                 <tabView:SfTabItem Header="Users" ImagePosition="Top">
                     <tabPages:UsersTab BindingContext="{Binding UsersViewModel.Model}" />
                     <tabView:SfTabItem.ImageSource>
                         <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.People}}" />
                     </tabView:SfTabItem.ImageSource>
                 </tabView:SfTabItem>
+                <tabView:SfTabItem Header="Stats" ImagePosition="Top">
+                    <tabPages:StatsTab />
+                    <tabView:SfTabItem.ImageSource>
+                        <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.AutoGraph}}" />
+                    </tabView:SfTabItem.ImageSource>
+                </tabView:SfTabItem>
+                <tabView:SfTabItem Header="Settings" ImagePosition="Top">
+                    <tabPages:SettingsTab />
+                    <tabView:SfTabItem.ImageSource>
+                        <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Settings}}" />
+                    </tabView:SfTabItem.ImageSource>
+                </tabView:SfTabItem>
             </tabView:SfTabView.Items>
         </tabView:SfTabView>
     </ContentPage.Content>
-    <!-- <tabPages:LibraryTab Title="Library" /> -->
-    <!-- <tabPages:UsersTab Title="Users" BindingContext="{Binding UsersViewModel.Model}" /> -->
-    <!-- <tabPages:StatsTab Title="Stats" /> -->
-    <!-- <tabPages:SettingsTab Title="Settings" /> -->
 </pages:ServiceContentPage>

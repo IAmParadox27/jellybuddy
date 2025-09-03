@@ -2,7 +2,6 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:listView="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
              xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
              x:Class="Jellybuddy.Pages.TabPages.UsersTab"
