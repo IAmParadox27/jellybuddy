@@ -8,7 +8,7 @@
         <Nullable>enable</Nullable>
         
         <HasJellyfinServerUrl>$([System.IO.File]::Exists("$(MSBuildProjectDirectory)\..\..\JellyfinServerUrl.txt"))</HasJellyfinServerUrl>
-        <JellyfinServerUrl>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)\..\..\JellyfinServerUrl.txt"))</JellyfinServerUrl>
+        <JellyfinServerUrl Condition="$(HasJellyfinServerUrl)">$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)\..\..\JellyfinServerUrl.txt"))</JellyfinServerUrl>
     </PropertyGroup>
 
     <ItemGroup>
