@@ -26,7 +26,8 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 
-        <SyncfusionLicenseKey>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)\Syncfusion.Licensing.txt"))</SyncfusionLicenseKey>
+        <HasSyncfusionLicenseKey>$([System.IO.File]::Exists("$(MSBuildProjectDirectory)\Syncfusion.Licensing.txt"))</HasSyncfusionLicenseKey>
+        <SyncfusionLicenseKey Condition="$(HasSyncfusionLicenseKey)">$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)\Syncfusion.Licensing.txt"))</SyncfusionLicenseKey>
 	</PropertyGroup>
     
     <Target Name="GenerateAssemblyMetadata" BeforeTargets="BeforeCompile">
