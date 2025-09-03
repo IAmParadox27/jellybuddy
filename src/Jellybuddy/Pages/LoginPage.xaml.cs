@@ -1,4 +1,5 @@
 ﻿using Jellybuddy.Core.DependencyInjection;
+using Jellybuddy.Core.Library;
 using Jellybuddy.Services;
 using Jellybuddy.ViewModels;
 

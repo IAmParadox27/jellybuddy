@@ -1,4 +1,4 @@
-﻿namespace Jellybuddy.Services
+﻿namespace Jellybuddy.Core.Library
 {
     /// <summary>
     /// Interface to declare what ViewModel should be used for the inheritor.

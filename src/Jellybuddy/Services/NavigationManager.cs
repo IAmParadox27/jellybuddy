@@ -1,10 +1,11 @@
 ﻿using System.Reflection;
 using Jellybuddy.Core.DependencyInjection;
+using Jellybuddy.Core.Library;
 using Jellybuddy.Pages;
 
 namespace Jellybuddy.Services
 {
-    public class NavigationManager : INavigationManager
+    public class NavigationManager : INavigationManager<Page>
     {
         private readonly IServiceProvider m_serviceProvider;
         

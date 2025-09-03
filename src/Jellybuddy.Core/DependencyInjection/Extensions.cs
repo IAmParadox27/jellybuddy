@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Jellybuddy.Core.DependencyInjection.Internal;
+using Jellybuddy.Core.Library;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Hosting;
 

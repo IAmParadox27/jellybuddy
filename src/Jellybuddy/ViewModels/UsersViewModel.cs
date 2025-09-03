@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Jellybuddy.Core.DependencyInjection;
+using Jellybuddy.Core.Library;
 using Jellybuddy.Dto;
 using Jellybuddy.Models;
 using Jellyfin.Api;

@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using CommunityToolkit.Maui;
 using Jellybuddy.Core.DependencyInjection;
+using Jellybuddy.Core.Library;
 using Jellybuddy.Services;
 using Maui.Biometric;
 using MauiIcons.Core;
@@ -37,7 +38,7 @@ namespace Jellybuddy
 					fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 				});
 
-			builder.Services.AddSingleton<INavigationManager, NavigationManager>();
+			builder.Services.AddSingleton<INavigationManager<Page>, NavigationManager>();
 			builder.Services.AddSingleton<IUIContext, UIContext>();
 
 #if DEBUG

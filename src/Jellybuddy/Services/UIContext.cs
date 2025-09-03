@@ -1,4 +1,6 @@
-﻿namespace Jellybuddy.Services
+﻿using Jellybuddy.Core.Library;
+
+namespace Jellybuddy.Services
 {
     public class UIContext : IUIContext
     {

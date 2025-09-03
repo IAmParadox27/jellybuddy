@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Jellybuddy.Core.Library;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Jellybuddy.Core.DependencyInjection.Internal

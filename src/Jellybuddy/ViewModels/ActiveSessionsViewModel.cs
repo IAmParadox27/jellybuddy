@@ -3,6 +3,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Jellybuddy.Core.DependencyInjection;
+using Jellybuddy.Core.Library;
 using Jellybuddy.Dto;
 using Jellybuddy.Models;
 using Jellybuddy.Services;
@@ -26,10 +27,10 @@ namespace Jellybuddy.ViewModels
         private bool m_isRefreshing = false;
         
         private readonly IModel<DataCache> m_model;
-        private readonly INavigationManager m_navigationManager;
+        private readonly INavigationManager<Page> m_navigationManager;
         private readonly IUIContext m_uiContext;
 
-        public ActiveSessionsViewModel(IModel<DataCache> model, INavigationManager navigationManager, IUIContext uiContext)
+        public ActiveSessionsViewModel(IModel<DataCache> model, INavigationManager<Page> navigationManager, IUIContext uiContext)
         {
             m_model = model;
             m_navigationManager = navigationManager;

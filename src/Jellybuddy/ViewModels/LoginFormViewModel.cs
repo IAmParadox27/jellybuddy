@@ -7,6 +7,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Jellybuddy.Core.DependencyInjection;
+using Jellybuddy.Core.Library;
 using Jellybuddy.Dto;
 using Jellybuddy.Models;
 using Jellybuddy.Pages;
@@ -27,10 +28,10 @@ namespace Jellybuddy.ViewModels
         [ObservableProperty]
         private bool m_isSheetOpen = false;
 
-        private readonly INavigationManager m_navigationManager;
+        private readonly INavigationManager<Page> m_navigationManager;
         private readonly IModel<DataCache> m_dataCache;
 
-        public LoginFormViewModel(INavigationManager navigationManager, IModel<DataCache> dataCache)
+        public LoginFormViewModel(INavigationManager<Page> navigationManager, IModel<DataCache> dataCache)
         {
             m_navigationManager = navigationManager;
             m_dataCache = dataCache;
