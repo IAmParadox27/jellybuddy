@@ -22,6 +22,7 @@
             <converters:SessionToProgressConverter x:Key="sessionToProgressConverter" />
             <converters:SessionToItemPosterConverter x:Key="sessionToItemProgressConverter" />
             <converters:UserToProfileImageConverter x:Key="userToProfileImageConverter" />
+            <converters:SessionInfoConverter x:Key="sessionInfoConverter" />
         </Border.Resources>
         <StackLayout Orientation="Vertical">
             <Grid ColumnDefinitions="Auto,*,Auto">
@@ -121,16 +122,16 @@
                     </StackLayout>
                     <StackLayout Orientation="Horizontal" Spacing="6" Margin="0, 5">
                         <Border StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="#49454F" Padding="6, 2">
-                            <Label Text="1080p" FontAttributes="Bold" TextColor="#C9C3CF" />
+                            <Label Text="{Binding ConverterParameter={x:Static converters:SessionInfoType.Resolution}, Converter={StaticResource sessionInfoConverter}}" FontAttributes="Bold" TextColor="#C9C3CF" />
                         </Border>
                         <Border StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="#49454F" Padding="6, 2">
-                            <Label Text="H264" FontAttributes="Bold" TextColor="#C9C3CF" />
+                            <Label Text="{Binding ConverterParameter={x:Static converters:SessionInfoType.VideoCodec}, Converter={StaticResource sessionInfoConverter}}" FontAttributes="Bold" TextColor="#C9C3CF" />
                         </Border>
                         <Border StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="#49454F" Padding="6, 2">
-                            <Label Text="AAC" FontAttributes="Bold" TextColor="#C9C3CF" />
+                            <Label Text="{Binding ConverterParameter={x:Static converters:SessionInfoType.AudioCodec}, Converter={StaticResource sessionInfoConverter}}" FontAttributes="Bold" TextColor="#C9C3CF" />
                         </Border>
                         <Border StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="#49454F" Padding="6, 2">
-                            <Label Text="MKV" FontAttributes="Bold" TextColor="#C9C3CF" />
+                            <Label Text="{Binding ConverterParameter={x:Static converters:SessionInfoType.VideoFormat}, Converter={StaticResource sessionInfoConverter}}" FontAttributes="Bold" TextColor="#C9C3CF" />
                         </Border>
                     </StackLayout>
                     <Grid ColumnDefinitions="*, 5, *" RowDefinitions="Auto,Auto" Margin="0, 10">
