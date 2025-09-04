@@ -13,7 +13,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>Jellybuddy</ApplicationTitle>
+		<ApplicationTitle>JellyBuddy</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>dev.iamparadox.jellybuddy</ApplicationId>
@@ -49,14 +49,14 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\icon.png" />
+        <MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" Include="Resources\AppIcon\icon.png" />
+        <MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'" Include="Resources\AppIcon\icon_apple.png" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#1B1B30" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\splash.png" Color="#1B1B30" BaseSize="512,768" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
@@ -100,5 +100,8 @@
         <DependentUpon>MainPage.xaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Resources\Splash\" />
     </ItemGroup>
 </Project>
