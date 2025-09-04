@@ -8,15 +8,27 @@
              xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
              xmlns:converters="clr-namespace:Jellybuddy.Converters"
              xmlns:sf="http://schemas.syncfusion.com/maui/toolkit"
+             xmlns:converters1="clr-namespace:Syncfusion.Maui.Core.Converters;assembly=Syncfusion.Maui.Core"
              x:Class="Jellybuddy.Pages.TabPages.DashboardTab"
              x:DataType="viewModels:ActiveSessionsViewModel">
+    <ContentView.Resources>
+        <converters1:InvertedBoolConverter x:Key="invertedBoolConverter" />
+    </ContentView.Resources>
     <ContentView.Content>
         <sf:SfPullToRefresh RefreshCommand="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
             <sf:SfPullToRefresh.PullableContent>
                 <ScrollView Padding="10">
                     <StackLayout Orientation="Vertical">
                         <Label Text="Active Sessions" FontSize="28" FontAttributes="Bold" Margin="5" />
-                        <CollectionView VerticalScrollBarVisibility="Never" ItemsSource="{Binding AllSessions}">
+                        <StackLayout Orientation="Vertical" Spacing="10" Padding="5" IsVisible="{Binding IsRefreshing}">
+                            <Border StrokeShape="RoundRectangle 15" StrokeThickness="0" BackgroundColor="#36343B" Opacity="0.25">
+                                <sf:SfShimmer Type="Article" HeightRequest="120" BackgroundColor="Transparent" />
+                            </Border>
+                            <Border StrokeShape="RoundRectangle 15" StrokeThickness="0" BackgroundColor="#36343B" Opacity="0.25">
+                                <sf:SfShimmer Type="Article" HeightRequest="120" BackgroundColor="Transparent" />
+                            </Border>
+                        </StackLayout>
+                        <CollectionView VerticalScrollBarVisibility="Never" ItemsSource="{Binding AllSessions}" IsVisible="{Binding IsRefreshing, Converter={StaticResource invertedBoolConverter}}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="api:SessionInfoDto">
                                     <controls:ActiveSessionCard BindingContext="{Binding}" />
