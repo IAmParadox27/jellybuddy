@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Grid xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
+             xmlns:converters="clr-namespace:Jellybuddy.Converters"
+             x:Class="Jellybuddy.Controls.UserControl"
+             x:DataType="api:UserDto">
+    <Grid.Resources>
+        <converters:UserToProfileImageConverter x:Key="userToProfileImageConverter" />
+    </Grid.Resources>
+    <Border Padding="10" BackgroundColor="#36343B" StrokeShape="RoundRectangle 10" StrokeThickness="0">
+        <StackLayout Orientation="Vertical">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="50" WidthRequest="50" BackgroundColor="#8674BB" />
+                <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="42" WidthRequest="42" BackgroundColor="White">
+                    <Image Source="{Binding Converter={StaticResource userToProfileImageConverter}}" Aspect="AspectFill" />
+                </Border>
+                
+                <StackLayout Grid.Column="1">
+                    <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+                    <Label Text="User">
+                        <Label.Style>
+                            <Style TargetType="Label">
+                                <Style.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding Policy.IsAdministrator}" Value="True">
+                                        <Setter Property="Text" Value="Administrator" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                    <Label Text="{Binding LastActivityDate}" />
+                    <Label Text="{Binding LastLoginDate}" />
+                </StackLayout>
+                <Border StrokeThickness="0" BackgroundColor="#444DAF50" StrokeShape="RoundRectangle 15" HeightRequest="30" Grid.Column="2" Margin="0,0,5,0">
+                    <StackLayout VerticalOptions="Center" Orientation="Horizontal">
+                        <Border StrokeShape="RoundRectangle 7" Margin="7,0" StrokeThickness="0" HeightRequest="14" WidthRequest="14" BackgroundColor="#4DAF50" />
+                        <Label Text="Active" Margin="0,0,10,0" />
+                    </StackLayout>
+                </Border>
+            </Grid>
+            <Rectangle HeightRequest="1" BackgroundColor="Gray" />
+            <StackLayout Orientation="Horizontal" FlowDirection="RightToLeft">
+            
+            </StackLayout>
+        </StackLayout>
+    </Border>
+</Grid>
