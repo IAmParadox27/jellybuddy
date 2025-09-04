@@ -4,22 +4,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:sf="http://schemas.syncfusion.com/maui/toolkit"
              xmlns:inputs="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
-             x:Class="Jellybuddy.Pages.TabPages.SettingsTab">
+             xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
+             x:Class="Jellybuddy.Pages.TabPages.SettingsTab"
+             x:DataType="viewModels:SettingsViewModel">
     <ContentView.Content>
-        <sf:SfBottomSheet IsOpen="False">
+        <sf:SfBottomSheet IsOpen="{Binding BottomSheetOpen}">
             <ScrollView>
                 <StackLayout Orientation="Vertical" Margin="10, 0" Spacing="10">
                     <Label Text="Settings" FontSize="28" FontAttributes="Bold" Margin="5, 5, 5, 20" />
-                    <inputs:SfComboBox IsClearButtonVisible="False" Padding="5" Background="#36343B" HeightRequest="50" ShowBorder="False" Placeholder="Select Server" />
-                    <Button Text="Add New Server Connection" />
+                    <inputs:SfComboBox ItemsSource="{Binding DataCache.Data.Servers}" SelectedItem="{Binding SelectedServer}" IsClearButtonVisible="False" Padding="5" Background="#36343B" HeightRequest="50" ShowBorder="False" Placeholder="Select Server" />
+                    <Button Text="Add New Server Connection" Command="{Binding OpenAddServerBottomSheetCommand}" />
                 </StackLayout>
             </ScrollView>
             <sf:SfBottomSheet.BottomSheetContent>
                 <StackLayout Orientation="Vertical" Spacing="10">
-                    <Entry Placeholder="Server URL" />
-                    <Entry Placeholder="Username" />
-                    <Entry Placeholder="Password" IsPassword="True" />
-                    <Button Text="Login and Add" />
+                    <Entry Placeholder="Server URL" Text="{Binding NewServer.Url}" />
+                    <Entry Placeholder="Username" Text="{Binding NewServer.Username}" />
+                    <Entry Placeholder="Password" IsPassword="True" Text="{Binding NewServer.Password}" />
+                    <Button Text="Login and Add" Command="{Binding AddServerCommand}" />
                 </StackLayout>
             </sf:SfBottomSheet.BottomSheetContent>
         </sf:SfBottomSheet>

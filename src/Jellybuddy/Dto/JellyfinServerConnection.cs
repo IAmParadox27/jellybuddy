@@ -18,5 +18,10 @@ namespace Jellybuddy.Dto
 
         [ObservableProperty]
         private string m_deviceId;
+
+        public override string ToString()
+        {
+            return $"{Url} ({Username})";
+        }
     }
 }

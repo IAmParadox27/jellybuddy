@@ -38,7 +38,7 @@
                     </sf:SfTabItem.ImageSource>
                 </sf:SfTabItem>
                 <sf:SfTabItem Header="Settings" ImagePosition="Top">
-                    <tabPages:SettingsTab />
+                    <tabPages:SettingsTab BindingContext="{Binding SettingsViewModel.Model}" />
                     <sf:SfTabItem.ImageSource>
                         <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Settings}}" />
                     </sf:SfTabItem.ImageSource>
