@@ -22,8 +22,6 @@
                     <StackLayout Orientation="Vertical">
                         <Label Text="Users" FontSize="28" FontAttributes="Bold" Margin="5" />
                         <Grid ColumnDefinitions="*,5,Auto" Margin="0, 0, 0, 20">
-                            <!-- <sf:SfTextInputLayout InputViewPadding="15, 0" Hint="Search..." VerticalOptions="Center"> -->
-                            <!-- </sf:SfTextInputLayout> -->
                             <Border StrokeThickness="0" StrokeShape="RoundRectangle 10" BackgroundColor="#36343B">
                                 <Entry Margin="10, 0" ClearButtonVisibility="WhileEditing" Text="{Binding SearchText}" Placeholder="Search..." />
                             </Border>
@@ -37,7 +35,7 @@
                                             <contextMenu:Group>
                                                 <contextMenu:Action Title="Name" Command="{Binding BindingContext.ChangeSortCategory, Source={x:Reference usersTab}}" CommandParameter="{x:Static viewModels:UserSortCategory.Name}" />
                                                 <contextMenu:Action Title="Last Active" Command="{Binding BindingContext.ChangeSortCategory, Source={x:Reference usersTab}}" CommandParameter="{x:Static viewModels:UserSortCategory.LastActive}" />
-                                                <contextMenu:Action Title="Role" Command="{Binding BindingContext.ChangeSortCategory, Source={x:Reference usersTab}}" CommandParameter="{x:Static viewModels:UserSortCategory.Role}" />
+                                                <contextMenu:Action IsVisible="False" Title="Role" Command="{Binding BindingContext.ChangeSortCategory, Source={x:Reference usersTab}}" CommandParameter="{x:Static viewModels:UserSortCategory.Role}" />
                                             </contextMenu:Group>
                                             <contextMenu:Group>
                                                 <contextMenu:Action Title="Ascending" Command="{Binding BindingContext.ChangeSortDirection, Source={x:Reference usersTab}}" CommandParameter="{x:Static componentModel:ListSortDirection.Ascending}" />

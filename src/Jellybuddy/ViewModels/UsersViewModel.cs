@@ -60,6 +60,10 @@ namespace Jellybuddy.ViewModels
                     }
 
                     return true;
+                },
+                SortDescriptions =
+                {
+                    new SortDescription($"{nameof(UserDto.Name)}", ListSortDirection.Ascending)
                 }
             };
 
