@@ -5,7 +5,8 @@
              xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
              xmlns:converters="clr-namespace:Jellybuddy.Converters"
              x:Class="Jellybuddy.Controls.UserControl"
-             x:DataType="api:UserDto">
+             x:DataType="api:UserDto"
+             RowDefinitions="*,10">
     <Grid.Resources>
         <converters:UserToProfileImageConverter x:Key="userToProfileImageConverter" />
     </Grid.Resources>
