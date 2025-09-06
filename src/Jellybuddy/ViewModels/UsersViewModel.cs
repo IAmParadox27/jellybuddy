@@ -23,7 +23,7 @@ namespace Jellybuddy.ViewModels
     public partial class UsersViewModel : ObservableObject, IPageViewModel
     {
         [ObservableProperty]
-        private ObservableCollection<UserDto> m_users = new ObservableCollection<UserDto>();
+        private ObservableCollection<UserDetails> m_users = new ObservableCollection<UserDetails>();
 
         [ObservableProperty]
         private string? m_searchText;
@@ -51,9 +51,9 @@ namespace Jellybuddy.ViewModels
                 Source = Users,
                 Filter = x =>
                 {
-                    if (x is UserDto user && !string.IsNullOrEmpty(SearchText))
+                    if (x is UserDetails user && !string.IsNullOrEmpty(SearchText))
                     {
-                        if (!user.Name.ToLower().Contains(SearchText.ToLower()))
+                        if (!user.User.Name.ToLower().Contains(SearchText.ToLower()))
                         {
                             return false;
                         }
@@ -63,7 +63,7 @@ namespace Jellybuddy.ViewModels
                 },
                 SortDescriptions =
                 {
-                    new SortDescription($"{nameof(UserDto.Name)}", ListSortDirection.Ascending)
+                    new SortDescription($"{nameof(UserDetails.User)}.{nameof(UserDto.Name)}", ListSortDirection.Ascending)
                 }
             };
 
@@ -86,8 +86,8 @@ namespace Jellybuddy.ViewModels
             UsersViewSource.SortDescriptions.Clear();
             UsersViewSource.SortDescriptions.Add(new SortDescription(obj switch
             {
-                UserSortCategory.Name => nameof(UserDto.Name),
-                UserSortCategory.LastActive => nameof(UserDto.LastActivityDate),
+                UserSortCategory.Name => $"{nameof(UserDetails.User)}.{nameof(UserDto.Name)}",
+                UserSortCategory.LastActive => $"{nameof(UserDetails.User)}.{nameof(UserDto.LastActivityDate)}",
                 UserSortCategory.Role => $"{nameof(UserDto.Policy)}.{nameof(UserPolicy.IsAdministrator)}"
             }, sortDescription.Direction));
         }
@@ -119,7 +119,14 @@ namespace Jellybuddy.ViewModels
                     
                     foreach (UserDto user in usersResult)
                     {
-                        Users.Add(user);
+                        try
+                        {
+                            Users.Add(new UserDetails(server, user));
+                        }
+                        catch (Exception e)
+                        {
+                            _ = 12;
+                        }
                     }
                 }
             }

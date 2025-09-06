@@ -4,35 +4,45 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
              xmlns:converters="clr-namespace:Jellybuddy.Converters"
+             xmlns:controls="clr-namespace:Jellybuddy.Controls"
+             xmlns:icons="http://www.aathifmahir.com/dotnet/2022/maui/icons"
+             xmlns:models="clr-namespace:Jellybuddy.Models"
              x:Class="Jellybuddy.Controls.UserControl"
-             x:DataType="api:UserDto"
+             x:DataType="models:UserDetails"
              RowDefinitions="*,10">
     <Grid.Resources>
         <converters:UserToProfileImageConverter x:Key="userToProfileImageConverter" />
+        <converters:DateConverter x:Key="dateConverter" />
     </Grid.Resources>
     <Border Padding="10" BackgroundColor="#36343B" StrokeShape="RoundRectangle 10" StrokeThickness="0">
         <StackLayout Orientation="Vertical">
-            <Grid ColumnDefinitions="Auto,*,Auto">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" Margin="0,0,0,10">
                 <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="50" WidthRequest="50" BackgroundColor="#8674BB" />
                 <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="42" WidthRequest="42" BackgroundColor="White">
-                    <Image Source="{Binding Converter={StaticResource userToProfileImageConverter}}" Aspect="AspectFill" />
+                    <Image Source="{Binding User, Converter={StaticResource userToProfileImageConverter}}" Aspect="AspectFill" />
                 </Border>
                 
                 <StackLayout Grid.Column="1">
-                    <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
-                    <Label Text="User">
+                    <Label Text="{Binding User.Name}" FontSize="18" FontAttributes="Bold" />
+                    <Label Text="User" Margin="0,0,0,10">
                         <Label.Style>
                             <Style TargetType="Label">
                                 <Style.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding Policy.IsAdministrator}" Value="True">
+                                    <DataTrigger TargetType="Label" Binding="{Binding User.Policy.IsAdministrator}" Value="True">
                                         <Setter Property="Text" Value="Administrator" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Label.Style>
                     </Label>
-                    <Label Text="{Binding LastActivityDate}" />
-                    <Label Text="{Binding LastLoginDate}" />
+                    <StackLayout Orientation="Horizontal">
+                        <Label FontAttributes="Bold" Text="Last active: " />
+                        <Label LineBreakMode="WordWrap" Text="{Binding User.LastActivityDate, Converter={StaticResource dateConverter}}" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label FontAttributes="Bold" Text="Last login: " />
+                        <Label LineBreakMode="WordWrap" Text="{Binding User.LastLoginDate, Converter={StaticResource dateConverter}}" />
+                    </StackLayout>
                 </StackLayout>
                 <Border StrokeThickness="0" BackgroundColor="#444DAF50" StrokeShape="RoundRectangle 15" HeightRequest="30" Grid.Column="2" Margin="0,0,5,0">
                     <StackLayout VerticalOptions="Center" Orientation="Horizontal">
@@ -40,11 +50,33 @@
                         <Label Text="Active" Margin="0,0,10,0" />
                     </StackLayout>
                 </Border>
+                <ImageButton Grid.Column="3" Scale="0.75">
+                    <ImageButton.Source>
+                        <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.MoreVert}}" />
+                    </ImageButton.Source>
+                </ImageButton>
             </Grid>
-            <Rectangle HeightRequest="1" BackgroundColor="Gray" />
-            <StackLayout Orientation="Horizontal" FlowDirection="RightToLeft">
-            
-            </StackLayout>
+            <Rectangle HeightRequest="1" BackgroundColor="#22AAAAAA" />
+            <Grid Margin="0,10,0,0" ColumnDefinitions="*,Auto,*">
+                <StackLayout Grid.Column="1" Orientation="Horizontal" FlowDirection="LeftToRight" Spacing="25">
+                    <controls:UserSummaryStatistic Text="Total" Value="{Binding TotalVideoCount}">
+                        <controls:UserSummaryStatistic.Icon>
+                            <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.PlayArrow}}" />
+                        </controls:UserSummaryStatistic.Icon>
+                    </controls:UserSummaryStatistic>
+                    <controls:UserSummaryStatistic Text="Episodes" Value="{Binding ItemCounts.EpisodeCount}">
+                        <controls:UserSummaryStatistic.Icon>
+                            <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Tv}}" />
+                        </controls:UserSummaryStatistic.Icon>
+                    </controls:UserSummaryStatistic>
+                    <controls:UserSummaryStatistic Text="Movies" Value="{Binding ItemCounts.MovieCount}">
+                        <controls:UserSummaryStatistic.Icon>
+                            <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Movie}}" />
+                        </controls:UserSummaryStatistic.Icon>
+                    </controls:UserSummaryStatistic>
+                    <!-- TODO: Add support for non video formats as a summary here. -->
+                </StackLayout>
+            </Grid>
         </StackLayout>
     </Border>
 </Grid>
