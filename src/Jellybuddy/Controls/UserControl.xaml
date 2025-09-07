@@ -23,25 +23,73 @@
     </Grid.Resources>
     <Border Padding="10" BackgroundColor="#36343B" StrokeShape="RoundRectangle 10" StrokeThickness="0">
         <StackLayout Orientation="Vertical">
-            <Grid ColumnDefinitions="Auto,*,Auto,Auto" Margin="0,0,0,10">
+            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,10">
                 <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="50" WidthRequest="50" BackgroundColor="#8674BB" />
                 <Border StrokeThickness="0" Grid.Column="0" Margin="10, 15" StrokeShape="RoundRectangle 25" HeightRequest="42" WidthRequest="42" BackgroundColor="White">
                     <Image Source="{Binding Converter={StaticResource userToProfileImageConverter}}" Aspect="AspectFill" />
                 </Border>
                 
                 <StackLayout Grid.Column="1">
-                    <Label Text="{Binding User.Name}" FontSize="18" FontAttributes="Bold" />
-                    <Label Text="User" Margin="0,0,0,10">
-                        <Label.Style>
-                            <Style TargetType="Label">
-                                <Style.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding User.Policy.IsAdministrator}" Value="True">
-                                        <Setter Property="Text" Value="Administrator" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Label.Style>
-                    </Label>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackLayout Grid.Column="0">
+                            <Label Text="{Binding User.Name}" FontSize="18" FontAttributes="Bold" />
+                            <Label Text="User" Margin="0,0,0,10">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding User.Policy.IsAdministrator}" Value="True">
+                                                <Setter Property="Text" Value="Administrator" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
+                        </StackLayout>
+                        <Border VerticalOptions="Center" Grid.Column="1" StrokeThickness="0" BackgroundColor="#444DAF50" StrokeShape="RoundRectangle 15" HeightRequest="30" Margin="0,0,5,0">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Converter={StaticResource userActiveStatusConverter}}" Value="{x:Static converters:UserActiveStatus.Idle}">
+                                            <Setter Property="BackgroundColor" Value="#44ED9008" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Converter={StaticResource userActiveStatusConverter}}" Value="{x:Static converters:UserActiveStatus.Offline}">
+                                            <Setter Property="BackgroundColor" Value="#44F44336" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <StackLayout VerticalOptions="Center" Orientation="Horizontal">
+                                <Border StrokeShape="RoundRectangle 7" Margin="7,0" StrokeThickness="0" HeightRequest="14" WidthRequest="14" BackgroundColor="#4DAF50">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <DataTrigger TargetType="Border" Binding="{Binding Converter={StaticResource userActiveStatusConverter}}" Value="{x:Static converters:UserActiveStatus.Idle}">
+                                                    <Setter Property="BackgroundColor" Value="#ED9008" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Border" Binding="{Binding Converter={StaticResource userActiveStatusConverter}}" Value="{x:Static converters:UserActiveStatus.Offline}">
+                                                    <Setter Property="BackgroundColor" Value="#F44336" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                </Border>
+                                <Label Text="Active" Margin="0,0,10,0">
+                                    <Label.Style>
+                                        <Style TargetType="Label">
+                                            <Style.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding Converter={StaticResource userActiveStatusConverter}}" Value="{x:Static converters:UserActiveStatus.Idle}">
+                                                    <Setter Property="Text" Value="Idle" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding Converter={StaticResource userActiveStatusConverter}}" Value="{x:Static converters:UserActiveStatus.Offline}">
+                                                    <Setter Property="Text" Value="Offline" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Label.Style>
+                                </Label>
+                            </StackLayout>
+                        </Border>
+                    </Grid>
                     <StackLayout Orientation="Horizontal">
                         <Label FontAttributes="Bold" Text="Last active: " />
                         <Label LineBreakMode="WordWrap" Text="{Binding User.LastActivityDate, Converter={StaticResource dateConverter}}" />
@@ -51,27 +99,7 @@
                         <Label LineBreakMode="WordWrap" Text="{Binding User.LastLoginDate, Converter={StaticResource dateConverter}}" />
                     </StackLayout>
                 </StackLayout>
-                <Border StrokeThickness="0" BackgroundColor="#444DAF50" StrokeShape="RoundRectangle 15" HeightRequest="30" Grid.Column="2" Margin="0,0,5,0">
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Style.Triggers>
-                                <DataTrigger TargetType="Border">
-                                    <DataTrigger.Binding>
-                                        <MultiBinding Converter="{StaticResource userActiveStatusConverter}">
-                                            <Binding Path="User" />
-                                            <Binding Path="UserSessions" />
-                                        </MultiBinding>
-                                    </DataTrigger.Binding>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                    <StackLayout VerticalOptions="Center" Orientation="Horizontal">
-                        <Border StrokeShape="RoundRectangle 7" Margin="7,0" StrokeThickness="0" HeightRequest="14" WidthRequest="14" BackgroundColor="#4DAF50" />
-                        <Label Text="Active" Margin="0,0,10,0" />
-                    </StackLayout>
-                </Border>
-                <ImageButton Grid.Column="3" Scale="0.75" contextMenu:ContextMenu.ShowMenuOnClick="True">
+                <ImageButton Grid.Column="2" Scale="0.75" contextMenu:ContextMenu.ShowMenuOnClick="True">
                     <ImageButton.Source>
                         <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.MoreVert}}" />
                     </ImageButton.Source>

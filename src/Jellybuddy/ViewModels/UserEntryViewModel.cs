@@ -27,8 +27,18 @@ namespace Jellybuddy.ViewModels
         {
             if (value != null)
             {
-                _ = LoadItemCountsAsync().ConfigureAwait(false);
-                _ = LoadUserActiveSessionsAsync().ConfigureAwait(false);
+                Thread t = new Thread(async void () =>
+                {
+                    try
+                    {
+                        await LoadItemCountsAsync().ConfigureAwait(false);
+                        await LoadUserActiveSessionsAsync().ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                });
+                t.Start();
             }
         }
 
