@@ -125,6 +125,8 @@ namespace Jellybuddy.ViewModels
                             UserEntryViewModel userEntryViewModel = ActivatorUtilities.CreateInstance<UserEntryViewModel>(m_serviceProvider, server);
                             userEntryViewModel.User = x;
                             
+                            userEntryViewModel.UserDeleted += UserEntryViewModel_OnUserDeleted;
+                            
                             return userEntryViewModel;
                         }));
                     });
@@ -140,6 +142,11 @@ namespace Jellybuddy.ViewModels
             // {
             //     ItemCounts.AddRange(x.Result.Select(y => (y.user.Id, y.counts ?? new ItemCounts())));
             // });
+        }
+
+        private void UserEntryViewModel_OnUserDeleted(UserEntryViewModel userEntryViewModel)
+        {
+            Users.Remove(userEntryViewModel);
         }
 
         partial void OnSearchTextChanged(string? value)

@@ -27,6 +27,8 @@ namespace Jellybuddy.ViewModels
 
         private readonly JellyfinServerConnection m_server;
 
+        public event Action<UserEntryViewModel>? UserDeleted;
+        
         public UserEntryViewModel(JellyfinServerConnection server)
         {
             m_server = server;
@@ -71,6 +73,8 @@ namespace Jellybuddy.ViewModels
                     User = null;
                     UserSessions = Array.Empty<SessionInfoDto>();
                     ItemCounts = new ItemCounts();
+                    
+                    UserDeleted?.Invoke(this);
                 }
             }
             catch (Exception)
