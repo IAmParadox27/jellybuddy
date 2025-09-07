@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Jellybuddy.Dto
+namespace Jellybuddy.Core.Model
 {
     public partial class JellyfinServerConnection : ObservableObject
     {
@@ -17,11 +17,11 @@ namespace Jellybuddy.Dto
         private string? m_accessToken;
 
         [ObservableProperty]
-        private string m_deviceId;
+        private string m_deviceId = Guid.NewGuid().ToString().Replace("-", "");
 
         public override string ToString()
         {
-            return $"{Url} ({Username})";
+            return $"{Url}";
         }
     }
 }

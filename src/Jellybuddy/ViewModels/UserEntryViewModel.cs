@@ -2,6 +2,8 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Jellybuddy.Core.Library;
+using Jellybuddy.Core.Model;
 using Jellybuddy.Dto;
 using Jellyfin.Api;
 using Newtonsoft.Json.Linq;
@@ -25,13 +27,14 @@ namespace Jellybuddy.ViewModels
         [ObservableProperty]
         private ICommand m_deleteUserCommand;
 
-        private readonly JellyfinServerConnection m_server;
+        [ObservableProperty]
+        private IServerConnectionManager m_serverConnectionManager;
 
         public event Action<UserEntryViewModel>? UserDeleted;
         
-        public UserEntryViewModel(JellyfinServerConnection server)
+        public UserEntryViewModel(IServerConnectionManager serverConnectionManager)
         {
-            m_server = server;
+            ServerConnectionManager = serverConnectionManager;
 
             EditUserCommand = new AsyncRelayCommand(OnEditUser);
             DeleteUserCommand = new AsyncRelayCommand(OnDeleteUser);
@@ -45,16 +48,9 @@ namespace Jellybuddy.ViewModels
             }
             
             // TODO: Add some kind of confirmation dialog.
-
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(m_server.Url!);
-            client.DefaultRequestHeaders.Add("X-Emby-Authorization", 
-                $"MediaBrowser Client=\"JellyBuddy\", Device=\"{DeviceInfo.Current.Name}\", DeviceId=\"{m_server.DeviceId}\", Version=\"1.0.0\", Token=\"{m_server.AccessToken}\"");
-            client.DefaultRequestHeaders.Add("Accept", "*/*");
-            
             try
             {
-                HttpResponseMessage response = await client.DeleteAsync($"/Users/{User.Id}");
+                HttpResponseMessage response = await ServerConnectionManager.ActiveConnectionClient!.DeleteAsync($"/Users/{User.Id}");
 
                 if (response.StatusCode != HttpStatusCode.NoContent)
                 {
@@ -89,12 +85,6 @@ namespace Jellybuddy.ViewModels
             {
                 return;
             }
-
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(m_server.Url!);
-            client.DefaultRequestHeaders.Add("X-Emby-Authorization", 
-                $"MediaBrowser Client=\"JellyBuddy\", Device=\"{DeviceInfo.Current.Name}\", DeviceId=\"{m_server.DeviceId}\", Version=\"1.0.0\", Token=\"{m_server.AccessToken}\"");
-            client.DefaultRequestHeaders.Add("Accept", "*/*");
         }
         
         partial void OnUserChanged(UserDto? value)
@@ -123,15 +113,9 @@ namespace Jellybuddy.ViewModels
                 return;
             }
             
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(m_server.Url!);
-            client.DefaultRequestHeaders.Add("X-Emby-Authorization", 
-                $"MediaBrowser Client=\"JellyBuddy\", Device=\"{DeviceInfo.Current.Name}\", DeviceId=\"{m_server.DeviceId}\", Version=\"1.0.0\", Token=\"{m_server.AccessToken}\"");
-            client.DefaultRequestHeaders.Add("Accept", "*/*");
-
             try
             {
-                HttpResponseMessage response = await client.GetAsync($"/Items/Counts?userId={User.Id}");
+                HttpResponseMessage response = await ServerConnectionManager.ActiveConnectionClient!.GetAsync($"/Items/Counts?userId={User.Id}");
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -156,15 +140,9 @@ namespace Jellybuddy.ViewModels
                 return;
             }
             
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(m_server.Url!);
-            client.DefaultRequestHeaders.Add("X-Emby-Authorization", 
-                $"MediaBrowser Client=\"JellyBuddy\", Device=\"{DeviceInfo.Current.Name}\", DeviceId=\"{m_server.DeviceId}\", Version=\"1.0.0\", Token=\"{m_server.AccessToken}\"");
-            client.DefaultRequestHeaders.Add("Accept", "*/*");
-
             try
             {
-                HttpResponseMessage response = await client.GetAsync($"/Sessions?controllableByUserId={User.Id}");
+                HttpResponseMessage response = await ServerConnectionManager.ActiveConnectionClient!.GetAsync($"/Sessions?controllableByUserId={User.Id}");
 
                 if (response.IsSuccessStatusCode)
                 {

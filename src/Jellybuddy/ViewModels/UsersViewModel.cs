@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Jellybuddy.Core.DependencyInjection;
 using Jellybuddy.Core.Library;
+using Jellybuddy.Core.Model;
 using Jellybuddy.Dto;
 using Jellybuddy.Models;
 using Jellyfin.Api;
@@ -43,15 +44,18 @@ namespace Jellybuddy.ViewModels
         [ObservableProperty]
         private ICommand m_refreshCommand;
         
-        private readonly IModel<DataCache> m_dataCache;
+        [ObservableProperty]
+        private IServerConnectionManager m_serverConnectionManager;
+        
         private readonly IUIContext m_uiContext;
         private readonly IServiceProvider m_serviceProvider;
 
-        public UsersViewModel(IModel<DataCache> dataCache, IUIContext uiContext, IServiceProvider serviceProvider)
+        public UsersViewModel(IUIContext uiContext, IServiceProvider serviceProvider, IServerConnectionManager serverConnectionManager)
         {
-            m_dataCache = dataCache;
             m_uiContext = uiContext;
             m_serviceProvider = serviceProvider;
+            
+            ServerConnectionManager = serverConnectionManager;
 
             UsersViewSource = new CollectionViewSource
             {
@@ -81,7 +85,10 @@ namespace Jellybuddy.ViewModels
 
         private async Task OnRefresh()
         {
-            await LoadUsersAsync(m_dataCache.Data.Servers.First(), false);
+            if (ServerConnectionManager.ActiveConnection != null)
+            {
+                await LoadUsersAsync(ServerConnectionManager.ActiveConnection, false);
+            }
         }
 
         private void OnChangeSortDirection(ListSortDirection obj)
@@ -139,7 +146,7 @@ namespace Jellybuddy.ViewModels
                         Users.Clear();
                         Users.AddRange(usersResult.Select(x =>
                         {
-                            UserEntryViewModel userEntryViewModel = ActivatorUtilities.CreateInstance<UserEntryViewModel>(m_serviceProvider, server);
+                            UserEntryViewModel userEntryViewModel = ActivatorUtilities.CreateInstance<UserEntryViewModel>(m_serviceProvider);
                             userEntryViewModel.User = x;
                             
                             userEntryViewModel.UserDeleted += UserEntryViewModel_OnUserDeleted;
@@ -180,44 +187,16 @@ namespace Jellybuddy.ViewModels
         {
             Thread thread = new Thread(async () =>
             {
-                await LoadUsersAsync(m_dataCache.Data.Servers.First(), false).ConfigureAwait(false);
+                if (ServerConnectionManager.ActiveConnection != null)
+                {
+                    await LoadUsersAsync(ServerConnectionManager.ActiveConnection, false).ConfigureAwait(false);
+                }
             });
             thread.Start();
         }
 
         public void OnNavigatedFrom()
         {
-        }
-        
-        private async Task<ItemCounts?> LoadItemCountsAsync(JellyfinServerConnection server, UserDto user)
-        {
-            ItemCounts? itemCounts = null;
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(server.Url!);
-            client.DefaultRequestHeaders.Add("X-Emby-Authorization", 
-                $"MediaBrowser Client=\"JellyBuddy\", Device=\"{DeviceInfo.Current.Name}\", DeviceId=\"{server.DeviceId}\", Version=\"1.0.0\", Token=\"{server.AccessToken}\"");
-            client.DefaultRequestHeaders.Add("Accept", "*/*");
-
-            try
-            {
-                HttpResponseMessage response = await client.GetAsync($"/Items/Counts?userId={user.Id}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    string? json = await response.Content.ReadAsStringAsync();
-
-                    if (json != null)
-                    {
-                        itemCounts = JObject.Parse(json).ToObject<ItemCounts>() ?? new ItemCounts();
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                _ = 12;
-            }
-
-            return itemCounts;
         }
     }
 }

@@ -51,6 +51,7 @@ namespace Jellybuddy
 #endif
 				});
 
+			builder.Services.AddSingleton<IServerConnectionManager, ServerConnectionManager>();
 			builder.Services.AddSingleton<INavigationManager<Page>, NavigationManager>();
 			builder.Services.AddSingleton<IUIContext, UIContext>();
 

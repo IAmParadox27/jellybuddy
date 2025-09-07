@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Jellybuddy.Core.DependencyInjection;
 using Jellybuddy.Core.Library;
+using Jellybuddy.Core.Model;
 using Jellybuddy.Dto;
 using Jellybuddy.Models;
 using Jellybuddy.Services;
@@ -26,15 +27,18 @@ namespace Jellybuddy.ViewModels
         [ObservableProperty]
         private bool m_isRefreshing = false;
         
-        private readonly IModel<DataCache> m_model;
+        [ObservableProperty]
+        private IServerConnectionManager m_serverConnectionManager;
+        
         private readonly INavigationManager<Page> m_navigationManager;
         private readonly IUIContext m_uiContext;
 
-        public ActiveSessionsViewModel(IModel<DataCache> model, INavigationManager<Page> navigationManager, IUIContext uiContext)
+        public ActiveSessionsViewModel(INavigationManager<Page> navigationManager, IUIContext uiContext, IServerConnectionManager serverConnectionManager)
         {
-            m_model = model;
             m_navigationManager = navigationManager;
             m_uiContext = uiContext;
+            
+            ServerConnectionManager = serverConnectionManager;
 
             RefreshCommand = new AsyncRelayCommand(LoadSessionsAsync);
         }
@@ -74,7 +78,7 @@ namespace Jellybuddy.ViewModels
                 m_uiContext.Run(() => IsRefreshing = true);
             }
             
-            foreach (JellyfinServerConnection serverConnection in m_model.Data.Servers)
+            foreach (JellyfinServerConnection serverConnection in ServerConnectionManager.Servers)
             {
                 try
                 {
@@ -118,13 +122,7 @@ namespace Jellybuddy.ViewModels
                 return;
             }
             
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(server.Url);
-            client.DefaultRequestHeaders.Add("X-Emby-Authorization", 
-                $"MediaBrowser Client=\"JellyBuddy\", Device=\"{DeviceInfo.Current.Name}\", DeviceId=\"{server.DeviceId}\", Version=\"1.0.0\", Token=\"{server.AccessToken}\"");
-            client.DefaultRequestHeaders.Add("Accept", "*/*");
-
-            HttpResponseMessage response = await client.GetAsync("/Sessions?activeWithinSeconds=30");
+            HttpResponseMessage response = await ServerConnectionManager.ActiveConnectionClient!.GetAsync("/Sessions?activeWithinSeconds=30");
 
             if (response.IsSuccessStatusCode)
             {

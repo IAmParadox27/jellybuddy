@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Jellybuddy.Core.Library;
+using Jellybuddy.Core.Model;
 using Jellybuddy.Dto;
 using Jellybuddy.Models;
 
@@ -27,22 +28,24 @@ namespace Jellybuddy.ViewModels
         [ObservableProperty]
         private JellyfinServerConnection m_newServer = new JellyfinServerConnection();
 
-        public SettingsViewModel(IModel<DataCache> dataCache)
-        {
-            DataCache = dataCache;
+        [ObservableProperty]
+        private IServerConnectionManager m_serverConnectionManager;
 
+        public SettingsViewModel(IServerConnectionManager serverConnectionManager)
+        {
+            ServerConnectionManager = serverConnectionManager;
+            
             OpenAddServerBottomSheetCommand = new RelayCommand(OnOpenAddServerBottomSheet);
             AddServerCommand = new AsyncRelayCommand(OnAddServerCommand);
         }
 
-        private Task OnAddServerCommand()
+        private async Task OnAddServerCommand()
         {
             // Temp code for testing
-            DataCache.Data.Servers.Add(NewServer);
+            await ServerConnectionManager.AddServerAsync(NewServer);
             NewServer = new JellyfinServerConnection();
             
             BottomSheetOpen = false;
-            return Task.CompletedTask;
         }
 
         private void OnOpenAddServerBottomSheet()

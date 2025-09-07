@@ -12,7 +12,7 @@
             <ScrollView>
                 <StackLayout Orientation="Vertical" Margin="10, 0" Spacing="10">
                     <Label Text="Settings" FontSize="28" FontAttributes="Bold" Margin="5, 5, 5, 20" />
-                    <inputs:SfComboBox ItemsSource="{Binding DataCache.Data.Servers}" SelectedItem="{Binding SelectedServer}" IsClearButtonVisible="False" Padding="5" Background="#36343B" HeightRequest="50" ShowBorder="False" Placeholder="Select Server" />
+                    <inputs:SfComboBox ItemsSource="{Binding ServerConnectionManager.Servers}" SelectedItem="{Binding ServerConnectionManager.ActiveConnection}" IsClearButtonVisible="False" Padding="5" Background="#36343B" HeightRequest="50" ShowBorder="False" Placeholder="Select Server" />
                     <Button Text="Add New Server Connection" Command="{Binding OpenAddServerBottomSheetCommand}" />
                 </StackLayout>
             </ScrollView>

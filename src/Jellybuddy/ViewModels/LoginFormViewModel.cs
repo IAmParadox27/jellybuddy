@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Jellybuddy.Core.DependencyInjection;
 using Jellybuddy.Core.Library;
+using Jellybuddy.Core.Model;
 using Jellybuddy.Dto;
 using Jellybuddy.Models;
 using Jellybuddy.Pages;
@@ -32,12 +33,12 @@ namespace Jellybuddy.ViewModels
         private bool m_isSheetOpen = false;
 
         private readonly INavigationManager<Page> m_navigationManager;
-        private readonly IModel<DataCache> m_dataCache;
+        private readonly IServerConnectionManager m_serverConnectionManager;
 
-        public LoginFormViewModel(INavigationManager<Page> navigationManager, IModel<DataCache> dataCache)
+        public LoginFormViewModel(INavigationManager<Page> navigationManager, IServerConnectionManager serverConnectionManager)
         {
             m_navigationManager = navigationManager;
-            m_dataCache = dataCache;
+            m_serverConnectionManager = serverConnectionManager;
             
             SignInCommand = new AsyncRelayCommand(OnSignIn);
             AutoSignInCommand = new AsyncRelayCommand(OnAutoSignIn);
@@ -47,31 +48,14 @@ namespace Jellybuddy.ViewModels
 
         private async Task OnAutoSignIn()
         {
-            string? serverUrl = await SecureStorage.GetAsync("default_server_url");
-            string? deviceId = await SecureStorage.GetAsync("default_server_device_id");
-            string? token = await SecureStorage.GetAsync("default_server_token");
-            
-            if (serverUrl != null && deviceId != null && token != null)
+            if (m_serverConnectionManager.ActiveConnectionClient != null)
             {
-                HttpClient client = new HttpClient();
-                client.BaseAddress = new Uri(serverUrl);
-                client.DefaultRequestHeaders.Add("X-Emby-Authorization",
-                    $"MediaBrowser Client=\"JellyBuddy\", Device=\"{DeviceInfo.Current.Name}\", DeviceId=\"{deviceId}\", Version=\"1.0.0\", Token=\"{token}\"");
-                client.DefaultRequestHeaders.Add("Accept", "*/*");
-
-                HttpResponseMessage response = await client.GetAsync("/Users/Me");
+                HttpResponseMessage response = await m_serverConnectionManager.ActiveConnectionClient.GetAsync("/Users/Me");
                 string json = await response.Content.ReadAsStringAsync();
 
                 try
                 {
                     JObject parseResult = JObject.Parse(json);
-
-                    m_dataCache.Data.Servers.Add(new JellyfinServerConnection()
-                    {
-                        Url = serverUrl,
-                        AccessToken = token,
-                        DeviceId = deviceId
-                    });
 
                     await m_navigationManager.NavigateToAsync<MainTabbedPage>();
                     return;
@@ -89,11 +73,6 @@ namespace Jellybuddy.ViewModels
             // Make HTTP request to server
             string deviceId = Guid.NewGuid().ToString().Replace("-", "");
             
-            HttpClient httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("X-Emby-Authorization", 
-                $"MediaBrowser Client=\"JellyBuddy\", Device=\"{DeviceInfo.Current.Name}\", DeviceId=\"{deviceId}\", Version=\"1.0.0\"");
-            httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
-            
             AuthenticationResult? authResult = await AuthenticateWithServer(new JellyfinServerConnection()
             {
                 Url = Model.ServerUrl,
@@ -104,10 +83,6 @@ namespace Jellybuddy.ViewModels
             
             if (authResult != null)
             {
-                await SecureStorage.SetAsync("default_server_url", Model.ServerUrl!);
-                await SecureStorage.SetAsync("default_server_device_id", deviceId);
-                await SecureStorage.SetAsync("default_server_token", authResult.AccessToken);
-                
                 JellyfinServerConnection? serverConnection = new JellyfinServerConnection
                 {
                     Url = Model.ServerUrl,
@@ -116,7 +91,9 @@ namespace Jellybuddy.ViewModels
                     Password = Model.Password,
                     DeviceId = deviceId
                 };
-                m_dataCache.Data.Servers.Add(serverConnection);
+                
+                await m_serverConnectionManager.AddServerAsync(serverConnection);
+                await m_serverConnectionManager.ChangeActiveConnection(serverConnection);
                 
                 IsSheetOpen = false;
 
