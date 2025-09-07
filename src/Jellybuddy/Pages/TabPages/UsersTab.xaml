@@ -13,6 +13,9 @@
              x:Class="Jellybuddy.Pages.TabPages.UsersTab"
              x:Name="usersTab"
              x:DataType="viewModels:UsersViewModel">
+    <ContentView.Resources>
+        <converters:UserTabToItemCountsConverter x:Key="userTabToItemCountsConverter" />
+    </ContentView.Resources>
     <ContentView.Content>
         <sf:SfPullToRefresh>
             <sf:SfPullToRefresh.PullableContent>
@@ -48,7 +51,14 @@
                             <CollectionView VerticalScrollBarVisibility="Never" ItemsSource="{Binding UsersViewSource.View}">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="api:UserDto">
-                                        <controls:UserControl BindingContext="{Binding}" />
+                                        <controls:UserControl x:Name="userControl">
+                                            <controls:UserControl.ItemCounts>
+                                                <MultiBinding Converter="{StaticResource userTabToItemCountsConverter}">
+                                                    <Binding Source="{x:Reference usersTab}" Path="BindingContext" />
+                                                    <Binding />
+                                                </MultiBinding>
+                                            </controls:UserControl.ItemCounts>
+                                        </controls:UserControl>
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
                             </CollectionView>

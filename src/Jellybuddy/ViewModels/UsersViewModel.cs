@@ -23,8 +23,11 @@ namespace Jellybuddy.ViewModels
     public partial class UsersViewModel : ObservableObject, IPageViewModel
     {
         [ObservableProperty]
-        private ObservableCollection<UserDetails> m_users = new ObservableCollection<UserDetails>();
+        private RangedObservableCollection<UserDto> m_users = new RangedObservableCollection<UserDto>();
 
+        [ObservableProperty]
+        private RangedObservableCollection<(Guid UserId, ItemCounts Counts)> m_itemCounts = new RangedObservableCollection<(Guid UserId, ItemCounts Counts)>();
+        
         [ObservableProperty]
         private string? m_searchText;
         
@@ -51,9 +54,9 @@ namespace Jellybuddy.ViewModels
                 Source = Users,
                 Filter = x =>
                 {
-                    if (x is UserDetails user && !string.IsNullOrEmpty(SearchText))
+                    if (x is UserDto user && !string.IsNullOrEmpty(SearchText))
                     {
-                        if (!user.User.Name.ToLower().Contains(SearchText.ToLower()))
+                        if (!user.Name.ToLower().Contains(SearchText.ToLower()))
                         {
                             return false;
                         }
@@ -63,7 +66,7 @@ namespace Jellybuddy.ViewModels
                 },
                 SortDescriptions =
                 {
-                    new SortDescription($"{nameof(UserDetails.User)}.{nameof(UserDto.Name)}", ListSortDirection.Ascending)
+                    new SortDescription($"{nameof(UserDto.Name)}", ListSortDirection.Ascending)
                 }
             };
 
@@ -86,8 +89,8 @@ namespace Jellybuddy.ViewModels
             UsersViewSource.SortDescriptions.Clear();
             UsersViewSource.SortDescriptions.Add(new SortDescription(obj switch
             {
-                UserSortCategory.Name => $"{nameof(UserDetails.User)}.{nameof(UserDto.Name)}",
-                UserSortCategory.LastActive => $"{nameof(UserDetails.User)}.{nameof(UserDto.LastActivityDate)}",
+                UserSortCategory.Name => $"{nameof(UserDto.Name)}",
+                UserSortCategory.LastActive => $"{nameof(UserDto.LastActivityDate)}",
                 UserSortCategory.Role => $"{nameof(UserDto.Policy)}.{nameof(UserPolicy.IsAdministrator)}"
             }, sortDescription.Direction));
         }
@@ -99,7 +102,10 @@ namespace Jellybuddy.ViewModels
                 return;
             }
             
-            Users.Clear();
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Users.Clear();
+            });
             
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(server.Url);
@@ -109,6 +115,7 @@ namespace Jellybuddy.ViewModels
 
             HttpResponseMessage response = await client.GetAsync("/Users");
 
+            List<Task<(UserDto user, ItemCounts? counts)>> itemCountsTasks = new List<Task<(UserDto user, ItemCounts? counts)>>();
             if (response.IsSuccessStatusCode)
             {
                 string? json = await response.Content.ReadAsStringAsync();
@@ -117,19 +124,22 @@ namespace Jellybuddy.ViewModels
                 {
                     UserDto[] usersResult = JArray.Parse(json).ToObject<UserDto[]>() ?? Array.Empty<UserDto>();
                     
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        Users.AddRange(usersResult);
+                    });
+                    
                     foreach (UserDto user in usersResult)
                     {
-                        try
-                        {
-                            Users.Add(new UserDetails(server, user));
-                        }
-                        catch (Exception e)
-                        {
-                            _ = 12;
-                        }
+                        itemCountsTasks.Add(LoadItemCountsAsync(server, user).ContinueWith(x => (user, x.Result)));
                     }
                 }
             }
+
+            _ = Task.WhenAll(itemCountsTasks).ContinueWith(x =>
+            {
+                ItemCounts.AddRange(x.Result.Select(y => (y.user.Id, y.counts ?? new ItemCounts())));
+            });
         }
 
         partial void OnSearchTextChanged(string? value)
@@ -139,11 +149,46 @@ namespace Jellybuddy.ViewModels
 
         public void OnNavigatedTo()
         {
-            _ = LoadUsersAsync(m_dataCache.Data.Servers.First());
+            Thread thread = new Thread(async () =>
+            {
+                await LoadUsersAsync(m_dataCache.Data.Servers.First()).ConfigureAwait(false);
+            });
+            thread.Start();
         }
 
         public void OnNavigatedFrom()
         {
+        }
+        
+        private async Task<ItemCounts?> LoadItemCountsAsync(JellyfinServerConnection server, UserDto user)
+        {
+            ItemCounts? itemCounts = null;
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(server.Url!);
+            client.DefaultRequestHeaders.Add("X-Emby-Authorization", 
+                $"MediaBrowser Client=\"JellyBuddy\", Device=\"{DeviceInfo.Current.Name}\", DeviceId=\"{server.DeviceId}\", Version=\"1.0.0\", Token=\"{server.AccessToken}\"");
+            client.DefaultRequestHeaders.Add("Accept", "*/*");
+
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync($"/Items/Counts?userId={user.Id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string? json = await response.Content.ReadAsStringAsync();
+
+                    if (json != null)
+                    {
+                        itemCounts = JObject.Parse(json).ToObject<ItemCounts>() ?? new ItemCounts();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _ = 12;
+            }
+
+            return itemCounts;
         }
     }
 }
