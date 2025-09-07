@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Jellybuddy.ViewModels
 {
-    public partial class UserEntryViewModel : ObservableObject, IComparable
+    public partial class UserEntryViewModel : ObservableObject
     {
         [ObservableProperty]
         private UserDto? m_user;
@@ -96,28 +96,6 @@ namespace Jellybuddy.ViewModels
             {
                 _ = 12;
             }
-        }
-
-        public int CompareTo(object? obj)
-        {
-            if (obj is UserEntryViewModel other)
-            {
-                if (User != null && other.User?.Id == User?.Id)
-                {
-                    return 0;
-                }
-
-                if (User != null && other.User != null)
-                {
-                    return string.Compare(User.Name, other.User.Name, StringComparison.Ordinal);
-                }
-
-                // Treat them in the same place if they're not ready.
-                return 0;
-            }
-
-            // Always return -1 to ensure that the user is always at the top of the list
-            return -1;
         }
     }
 }
