@@ -14,6 +14,15 @@
              x:DataType="viewModels:UserEntryViewModel"
              x:Name="control"
              RowDefinitions="*,10">
+    <Grid.Style>
+        <Style TargetType="Grid">
+            <Style.Triggers>
+                <DataTrigger TargetType="Grid" Binding="{Binding User}" Value="{x:Null}">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Grid.Style>
     <Grid.Resources>
         <toolkit:IsNullConverter x:Key="isNullConverter" />
         <converters:UserToProfileImageConverter x:Key="userToProfileImageConverter" />
@@ -107,8 +116,8 @@
                         <DataTemplate>
                             <contextMenu:Menu>
                                 <contextMenu:Group>
-                                    <contextMenu:Action Title="Edit" />
-                                    <contextMenu:Action Title="Delete" />
+                                    <contextMenu:Action Title="Edit" Command="{Binding BindingContext.EditUserCommand, Source={x:Reference control}}" />
+                                    <contextMenu:Action Title="Delete" Command="{Binding BindingContext.DeleteUserCommand, Source={x:Reference control}}" />
                                 </contextMenu:Group>
                             </contextMenu:Menu>
                         </DataTemplate>
