@@ -9,8 +9,9 @@
              xmlns:models="clr-namespace:Jellybuddy.Models"
              xmlns:contextMenu="clr-namespace:The49.Maui.ContextMenu;assembly=The49.Maui.ContextMenu"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
              x:Class="Jellybuddy.Controls.UserControl"
-             x:DataType="api:UserDto"
+             x:DataType="viewModels:UserEntryViewModel"
              x:Name="control"
              RowDefinitions="*,10">
     <Grid.Resources>
@@ -18,6 +19,7 @@
         <converters:UserToProfileImageConverter x:Key="userToProfileImageConverter" />
         <converters:DateConverter x:Key="dateConverter" />
         <converters:ItemCountsTotalConverter x:Key="itemCountsTotalConverter" />
+        <converters:UserActiveStatusConverter x:Key="userActiveStatusConverter" />
     </Grid.Resources>
     <Border Padding="10" BackgroundColor="#36343B" StrokeShape="RoundRectangle 10" StrokeThickness="0">
         <StackLayout Orientation="Vertical">
@@ -28,12 +30,12 @@
                 </Border>
                 
                 <StackLayout Grid.Column="1">
-                    <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+                    <Label Text="{Binding User.Name}" FontSize="18" FontAttributes="Bold" />
                     <Label Text="User" Margin="0,0,0,10">
                         <Label.Style>
                             <Style TargetType="Label">
                                 <Style.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding Policy.IsAdministrator}" Value="True">
+                                    <DataTrigger TargetType="Label" Binding="{Binding User.Policy.IsAdministrator}" Value="True">
                                         <Setter Property="Text" Value="Administrator" />
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -42,14 +44,28 @@
                     </Label>
                     <StackLayout Orientation="Horizontal">
                         <Label FontAttributes="Bold" Text="Last active: " />
-                        <Label LineBreakMode="WordWrap" Text="{Binding LastActivityDate, Converter={StaticResource dateConverter}}" />
+                        <Label LineBreakMode="WordWrap" Text="{Binding User.LastActivityDate, Converter={StaticResource dateConverter}}" />
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
                         <Label FontAttributes="Bold" Text="Last login: " />
-                        <Label LineBreakMode="WordWrap" Text="{Binding LastLoginDate, Converter={StaticResource dateConverter}}" />
+                        <Label LineBreakMode="WordWrap" Text="{Binding User.LastLoginDate, Converter={StaticResource dateConverter}}" />
                     </StackLayout>
                 </StackLayout>
                 <Border StrokeThickness="0" BackgroundColor="#444DAF50" StrokeShape="RoundRectangle 15" HeightRequest="30" Grid.Column="2" Margin="0,0,5,0">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger TargetType="Border">
+                                    <DataTrigger.Binding>
+                                        <MultiBinding Converter="{StaticResource userActiveStatusConverter}">
+                                            <Binding Path="User" />
+                                            <Binding Path="UserSessions" />
+                                        </MultiBinding>
+                                    </DataTrigger.Binding>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
                     <StackLayout VerticalOptions="Center" Orientation="Horizontal">
                         <Border StrokeShape="RoundRectangle 7" Margin="7,0" StrokeThickness="0" HeightRequest="14" WidthRequest="14" BackgroundColor="#4DAF50" />
                         <Label Text="Active" Margin="0,0,10,0" />
@@ -76,12 +92,12 @@
                     <Style TargetType="StackLayout">
                         <Style.Triggers>
                             <DataTrigger TargetType="StackLayout" 
-                                         Binding="{Binding ItemCounts, Source={x:Reference control}, Converter={StaticResource isNullConverter}}" 
+                                         Binding="{Binding ItemCounts, Converter={StaticResource isNullConverter}}" 
                                          Value="False">
                                 <Setter Property="IsVisible" Value="True" />
                             </DataTrigger>
                             <DataTrigger TargetType="StackLayout" 
-                                         Binding="{Binding ItemCounts, Source={x:Reference control}, Converter={StaticResource isNullConverter}}" 
+                                         Binding="{Binding ItemCounts, Converter={StaticResource isNullConverter}}" 
                                          Value="True">
                                 <Setter Property="IsVisible" Value="False" />
                             </DataTrigger>
@@ -91,17 +107,17 @@
                 <Rectangle HeightRequest="1" BackgroundColor="#22AAAAAA" />
                 <Grid Margin="0,10,0,0" ColumnDefinitions="*,Auto,*">
                     <StackLayout Grid.Column="1" Orientation="Horizontal" FlowDirection="LeftToRight" Spacing="25">
-                        <controls:UserSummaryStatistic Text="Total" Value="{Binding ItemCounts, Source={x:Reference control}, Converter={StaticResource itemCountsTotalConverter}}">
+                        <controls:UserSummaryStatistic Text="Total" Value="{Binding ItemCounts, Converter={StaticResource itemCountsTotalConverter}}">
                             <controls:UserSummaryStatistic.Icon>
                                 <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.PlayArrow}}" />
                             </controls:UserSummaryStatistic.Icon>
                         </controls:UserSummaryStatistic>
-                        <controls:UserSummaryStatistic Text="Episodes" Value="{Binding ItemCounts.EpisodeCount, Source={x:Reference control}}">
+                        <controls:UserSummaryStatistic Text="Episodes" Value="{Binding ItemCounts.EpisodeCount}">
                             <controls:UserSummaryStatistic.Icon>
                                 <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Tv}}" />
                             </controls:UserSummaryStatistic.Icon>
                         </controls:UserSummaryStatistic>
-                        <controls:UserSummaryStatistic Text="Movies" Value="{Binding ItemCounts.MovieCount, Source={x:Reference control}}">
+                        <controls:UserSummaryStatistic Text="Movies" Value="{Binding ItemCounts.MovieCount}">
                             <controls:UserSummaryStatistic.Icon>
                                 <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.Movie}}" />
                             </controls:UserSummaryStatistic.Icon>

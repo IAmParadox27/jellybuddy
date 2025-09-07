@@ -50,15 +50,8 @@
                             </Grid>
                             <CollectionView VerticalScrollBarVisibility="Never" ItemsSource="{Binding UsersViewSource.View}">
                                 <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="api:UserDto">
-                                        <controls:UserControl x:Name="userControl">
-                                            <controls:UserControl.ItemCounts>
-                                                <MultiBinding Converter="{StaticResource userTabToItemCountsConverter}">
-                                                    <Binding Source="{x:Reference usersTab}" Path="BindingContext" />
-                                                    <Binding />
-                                                </MultiBinding>
-                                            </controls:UserControl.ItemCounts>
-                                        </controls:UserControl>
+                                    <DataTemplate x:DataType="viewModels:UserEntryViewModel">
+                                        <controls:UserControl BindingContext="{Binding}" />
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
                             </CollectionView>

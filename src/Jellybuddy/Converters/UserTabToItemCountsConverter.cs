@@ -5,22 +5,19 @@ using Type = System.Type;
 
 namespace Jellybuddy.Converters
 {
-    public class UserTabToItemCountsConverter : IMultiValueConverter
+    public class UserTabToItemCountsConverter : IValueConverter
     {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (values.Length == 2)
+            if (value is UserEntryViewModel userEntryViewModel)
             {
-                if (values[0] is UsersViewModel usersViewModel && values[1] is UserDto user)
-                {
-                    return usersViewModel.ItemCounts.FirstOrDefault(x => x.UserId == user.Id).Counts;
-                }
+                return userEntryViewModel.ItemCounts;
             }
             
             return Binding.DoNothing;
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

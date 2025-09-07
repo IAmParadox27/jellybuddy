@@ -1,4 +1,6 @@
-﻿namespace Rotorsoft.Maui
+﻿using System;
+
+namespace Rotorsoft.Maui
 {
     internal struct SortPropertyInfo
     {
@@ -12,7 +14,15 @@
                 return o;
             }
 
-            return o.GetType().GetProperty(PropertyName).GetValue(o);
+            string[] propertyParts = PropertyName.Split('.');
+
+            object currentObject = o;
+            foreach (string propertyPart in propertyParts)
+            {
+                currentObject = currentObject?.GetType().GetProperty(propertyPart)?.GetValue(currentObject);
+            }
+
+            return currentObject;
         }
     }
 }

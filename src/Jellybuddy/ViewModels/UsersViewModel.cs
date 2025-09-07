@@ -23,11 +23,8 @@ namespace Jellybuddy.ViewModels
     public partial class UsersViewModel : ObservableObject, IPageViewModel
     {
         [ObservableProperty]
-        private RangedObservableCollection<UserDto> m_users = new RangedObservableCollection<UserDto>();
+        private RangedObservableCollection<UserEntryViewModel> m_users = new RangedObservableCollection<UserEntryViewModel>();
 
-        [ObservableProperty]
-        private RangedObservableCollection<(Guid UserId, ItemCounts Counts)> m_itemCounts = new RangedObservableCollection<(Guid UserId, ItemCounts Counts)>();
-        
         [ObservableProperty]
         private string? m_searchText;
         
@@ -42,12 +39,13 @@ namespace Jellybuddy.ViewModels
         
         private readonly IModel<DataCache> m_dataCache;
         private readonly IUIContext m_uiContext;
-        
+        private readonly IServiceProvider m_serviceProvider;
 
-        public UsersViewModel(IModel<DataCache> dataCache, IUIContext uiContext)
+        public UsersViewModel(IModel<DataCache> dataCache, IUIContext uiContext, IServiceProvider serviceProvider)
         {
             m_dataCache = dataCache;
             m_uiContext = uiContext;
+            m_serviceProvider = serviceProvider;
 
             UsersViewSource = new CollectionViewSource
             {
@@ -66,7 +64,7 @@ namespace Jellybuddy.ViewModels
                 },
                 SortDescriptions =
                 {
-                    new SortDescription($"{nameof(UserDto.Name)}", ListSortDirection.Ascending)
+                    new SortDescription($"{nameof(UserEntryViewModel.User)}.{nameof(UserDto.Name)}", ListSortDirection.Ascending)
                 }
             };
 
@@ -89,9 +87,9 @@ namespace Jellybuddy.ViewModels
             UsersViewSource.SortDescriptions.Clear();
             UsersViewSource.SortDescriptions.Add(new SortDescription(obj switch
             {
-                UserSortCategory.Name => $"{nameof(UserDto.Name)}",
-                UserSortCategory.LastActive => $"{nameof(UserDto.LastActivityDate)}",
-                UserSortCategory.Role => $"{nameof(UserDto.Policy)}.{nameof(UserPolicy.IsAdministrator)}"
+                UserSortCategory.Name => $"{nameof(UserEntryViewModel.User)}.{nameof(UserDto.Name)}",
+                UserSortCategory.LastActive => $"{nameof(UserEntryViewModel.User)}.{nameof(UserDto.LastActivityDate)}",
+                UserSortCategory.Role => $"{nameof(UserEntryViewModel.User)}.{nameof(UserDto.Policy)}.{nameof(UserPolicy.IsAdministrator)}"
             }, sortDescription.Direction));
         }
 
@@ -101,11 +99,6 @@ namespace Jellybuddy.ViewModels
             {
                 return;
             }
-            
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                Users.Clear();
-            });
             
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(server.Url);
@@ -126,20 +119,27 @@ namespace Jellybuddy.ViewModels
                     
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        Users.AddRange(usersResult);
+                        Users.Clear();
+                        Users.AddRange(usersResult.Select(x =>
+                        {
+                            UserEntryViewModel userEntryViewModel = ActivatorUtilities.CreateInstance<UserEntryViewModel>(m_serviceProvider, server);
+                            userEntryViewModel.User = x;
+                            
+                            return userEntryViewModel;
+                        }));
                     });
                     
-                    foreach (UserDto user in usersResult)
-                    {
-                        itemCountsTasks.Add(LoadItemCountsAsync(server, user).ContinueWith(x => (user, x.Result)));
-                    }
+                    // foreach (UserDto user in usersResult)
+                    // {
+                    //     itemCountsTasks.Add(LoadItemCountsAsync(server, user).ContinueWith(x => (user, x.Result)));
+                    // }
                 }
             }
 
-            _ = Task.WhenAll(itemCountsTasks).ContinueWith(x =>
-            {
-                ItemCounts.AddRange(x.Result.Select(y => (y.user.Id, y.counts ?? new ItemCounts())));
-            });
+            // _ = Task.WhenAll(itemCountsTasks).ContinueWith(x =>
+            // {
+            //     ItemCounts.AddRange(x.Result.Select(y => (y.user.Id, y.counts ?? new ItemCounts())));
+            // });
         }
 
         partial void OnSearchTextChanged(string? value)
