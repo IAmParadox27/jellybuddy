@@ -27,6 +27,9 @@ namespace Jellybuddy.ViewModels
 
         [ObservableProperty]
         private string? m_searchText;
+
+        [ObservableProperty]
+        private bool m_isRefreshing = false;
         
         [ObservableProperty]
         private CollectionViewSource m_usersViewSource;
@@ -36,6 +39,9 @@ namespace Jellybuddy.ViewModels
 
         [ObservableProperty]
         private ICommand m_changeSortDirection;
+
+        [ObservableProperty]
+        private ICommand m_refreshCommand;
         
         private readonly IModel<DataCache> m_dataCache;
         private readonly IUIContext m_uiContext;
@@ -70,6 +76,12 @@ namespace Jellybuddy.ViewModels
 
             ChangeSortCategory = new RelayCommand<UserSortCategory>(OnChangeSortCategory);
             ChangeSortDirection = new RelayCommand<ListSortDirection>(OnChangeSortDirection);
+            RefreshCommand = new AsyncRelayCommand(OnRefresh);
+        }
+
+        private async Task OnRefresh()
+        {
+            await LoadUsersAsync(m_dataCache.Data.Servers.First(), false);
         }
 
         private void OnChangeSortDirection(ListSortDirection obj)
@@ -93,11 +105,16 @@ namespace Jellybuddy.ViewModels
             }, sortDescription.Direction));
         }
 
-        private async Task LoadUsersAsync(JellyfinServerConnection server)
+        private async Task LoadUsersAsync(JellyfinServerConnection server, bool isBackgroundRefresh = true)
         {
             if (server.Url == null)
             {
                 return;
+            }
+
+            if (!isBackgroundRefresh)
+            {
+                IsRefreshing = true;
             }
             
             HttpClient client = new HttpClient();
@@ -142,6 +159,11 @@ namespace Jellybuddy.ViewModels
             // {
             //     ItemCounts.AddRange(x.Result.Select(y => (y.user.Id, y.counts ?? new ItemCounts())));
             // });
+
+            if (!isBackgroundRefresh)
+            {
+                IsRefreshing = false;
+            }
         }
 
         private void UserEntryViewModel_OnUserDeleted(UserEntryViewModel userEntryViewModel)
@@ -158,7 +180,7 @@ namespace Jellybuddy.ViewModels
         {
             Thread thread = new Thread(async () =>
             {
-                await LoadUsersAsync(m_dataCache.Data.Servers.First()).ConfigureAwait(false);
+                await LoadUsersAsync(m_dataCache.Data.Servers.First(), false).ConfigureAwait(false);
             });
             thread.Start();
         }

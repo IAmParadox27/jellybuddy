@@ -10,14 +10,16 @@
              xmlns:contextMenu="clr-namespace:The49.Maui.ContextMenu;assembly=The49.Maui.ContextMenu"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System.ComponentModel.TypeConverter"
              xmlns:controls="clr-namespace:Jellybuddy.Controls"
+             xmlns:converters1="clr-namespace:Syncfusion.Maui.Core.Converters;assembly=Syncfusion.Maui.Core"
              x:Class="Jellybuddy.Pages.TabPages.UsersTab"
              x:Name="usersTab"
              x:DataType="viewModels:UsersViewModel">
     <ContentView.Resources>
         <converters:UserTabToItemCountsConverter x:Key="userTabToItemCountsConverter" />
+        <converters1:InvertedBoolConverter x:Key="invertedBoolConverter" />
     </ContentView.Resources>
     <ContentView.Content>
-        <sf:SfPullToRefresh>
+        <sf:SfPullToRefresh IsRefreshing="{Binding IsRefreshing}" RefreshCommand="{Binding RefreshCommand}">
             <sf:SfPullToRefresh.PullableContent>
                 <ScrollView Padding="10">
                     <StackLayout Orientation="Vertical">
@@ -48,13 +50,24 @@
                                     </contextMenu:ContextMenu.Menu>
                                 </Button>
                             </Grid>
-                            <CollectionView VerticalScrollBarVisibility="Never" ItemsSource="{Binding UsersViewSource.View}">
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="viewModels:UserEntryViewModel">
-                                        <controls:UserControl BindingContext="{Binding}" />
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
+                            <StackLayout>
+                                <StackLayout Orientation="Vertical" Spacing="10" Padding="5" IsVisible="{Binding IsRefreshing}">
+                                    <Border StrokeShape="RoundRectangle 15" StrokeThickness="0" BackgroundColor="#36343B" Opacity="0.25">
+                                        <sf:SfShimmer Type="CirclePersona" HeightRequest="120" BackgroundColor="Transparent" />
+                                    </Border>
+                                    <Border StrokeShape="RoundRectangle 15" StrokeThickness="0" BackgroundColor="#36343B" Opacity="0.25">
+                                        <sf:SfShimmer Type="CirclePersona" HeightRequest="120" BackgroundColor="Transparent" />
+                                    </Border>
+                                </StackLayout>
+                                <CollectionView VerticalScrollBarVisibility="Never" ItemsSource="{Binding UsersViewSource.View}" 
+                                                IsVisible="{Binding IsRefreshing, Converter={StaticResource invertedBoolConverter}}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="viewModels:UserEntryViewModel">
+                                            <controls:UserControl BindingContext="{Binding}" />
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </StackLayout>
                         </StackLayout>
                     </StackLayout>
                 </ScrollView>
