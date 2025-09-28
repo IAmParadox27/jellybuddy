@@ -31,7 +31,7 @@ namespace Jellybuddy.ViewModels
         private IServerConnectionManager m_serverConnectionManager;
 
         public event Action<UserEntryViewModel>? UserDeleted;
-        
+
         public UserEntryViewModel(IServerConnectionManager serverConnectionManager)
         {
             ServerConnectionManager = serverConnectionManager;
@@ -112,25 +112,58 @@ namespace Jellybuddy.ViewModels
             {
                 return;
             }
-            
-            try
-            {
-                HttpResponseMessage response = await ServerConnectionManager.ActiveConnectionClient!.GetAsync($"/Items/Counts?userId={User.Id}");
 
-                if (response.IsSuccessStatusCode)
+            VirtualFolderInfo[] libraries = await LoadLibrariesAsync();
+
+            await Parallel.ForEachAsync(libraries, async (library, _) =>
+            {
+                switch (library.CollectionType)
                 {
-                    string? json = await response.Content.ReadAsStringAsync();
-
-                    if (json != null)
+                    case VirtualFolderInfoCollectionType.Movies:
                     {
-                        ItemCounts = JObject.Parse(json).ToObject<ItemCounts>() ?? new ItemCounts();
+                        int count = await LoadCountForLibraryAsync(library, BaseItemKind.Movie);
+                        ItemCounts.MovieCount += count;
+                        break;
                     }
+                    case VirtualFolderInfoCollectionType.Tvshows:
+                    {
+                        int seriesCount = await LoadCountForLibraryAsync(library, BaseItemKind.Series);
+                        int episodeCount = await LoadCountForLibraryAsync(library, BaseItemKind.Episode);
+                        
+                        ItemCounts.SeriesCount += seriesCount;
+                        ItemCounts.EpisodeCount += episodeCount;
+                        break;
+                    }
+                    case VirtualFolderInfoCollectionType.Boxsets:
+                    {
+                        int count = await LoadCountForLibraryAsync(library, BaseItemKind.BoxSet);
+                        ItemCounts.BoxSetCount += count;
+                        break;
+                    }
+                    default:
+                        break;
                 }
-            }
-            catch (Exception)
-            {
-                _ = 12;
-            }
+            });
+        }
+
+        private async Task<VirtualFolderInfo[]> LoadLibrariesAsync()
+        {
+            HttpResponseMessage response = await ServerConnectionManager.ActiveConnectionClient!.GetAsync("/Library/VirtualFolders");
+
+            string responseJson = await response.Content.ReadAsStringAsync();
+
+            VirtualFolderInfo[]? libraries = JArray.Parse(responseJson).ToObject<VirtualFolderInfo[]>();
+
+            return libraries ?? Array.Empty<VirtualFolderInfo>();
+        }
+
+        private async Task<int> LoadCountForLibraryAsync(VirtualFolderInfo library, BaseItemKind kind)
+        {
+            HttpResponseMessage response = await ServerConnectionManager.ActiveConnectionClient!.GetAsync($"/Users/{User.Id}/Items?IncludeItemTypes={kind}&Recursive=true&StartIndex=0&Limit=1&ParentId={library.ItemId}");
+
+            string responseJson = await response.Content.ReadAsStringAsync();
+            
+            return JObject.Parse(responseJson).Value<int>("TotalRecordCount");
         }
 
         private async Task LoadUserActiveSessionsAsync()

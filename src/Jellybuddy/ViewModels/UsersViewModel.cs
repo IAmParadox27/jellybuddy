@@ -87,7 +87,7 @@ namespace Jellybuddy.ViewModels
         {
             if (ServerConnectionManager.ActiveConnection != null)
             {
-                await LoadUsersAsync(ServerConnectionManager.ActiveConnection, false);
+                await LoadUsersAsync(ServerConnectionManager.ActiveConnection, false).ConfigureAwait(false);
             }
         }
 
@@ -140,32 +140,25 @@ namespace Jellybuddy.ViewModels
                 if (json != null)
                 {
                     UserDto[] usersResult = JArray.Parse(json).ToObject<UserDto[]>() ?? Array.Empty<UserDto>();
+                    UserEntryViewModel[] userEntryViewModels = usersResult.Select(x =>
+                    {
+                        UserEntryViewModel userEntryViewModel = ActivatorUtilities.CreateInstance<UserEntryViewModel>(m_serviceProvider);
+                        userEntryViewModel.User = x;
+                            
+                        userEntryViewModel.UserDeleted += UserEntryViewModel_OnUserDeleted;
+                            
+                        return userEntryViewModel;
+                    }).ToArray();
+                    
+                    Users.Clear();
+                    Users.AddRange(userEntryViewModels);
                     
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        Users.Clear();
-                        Users.AddRange(usersResult.Select(x =>
-                        {
-                            UserEntryViewModel userEntryViewModel = ActivatorUtilities.CreateInstance<UserEntryViewModel>(m_serviceProvider);
-                            userEntryViewModel.User = x;
-                            
-                            userEntryViewModel.UserDeleted += UserEntryViewModel_OnUserDeleted;
-                            
-                            return userEntryViewModel;
-                        }));
+                        UsersViewSource.View.Refresh();
                     });
-                    
-                    // foreach (UserDto user in usersResult)
-                    // {
-                    //     itemCountsTasks.Add(LoadItemCountsAsync(server, user).ContinueWith(x => (user, x.Result)));
-                    // }
                 }
             }
-
-            // _ = Task.WhenAll(itemCountsTasks).ContinueWith(x =>
-            // {
-            //     ItemCounts.AddRange(x.Result.Select(y => (y.user.Id, y.counts ?? new ItemCounts())));
-            // });
 
             if (!isBackgroundRefresh)
             {
