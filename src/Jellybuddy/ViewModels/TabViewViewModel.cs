@@ -16,13 +16,18 @@ namespace Jellybuddy.ViewModels
         private IViewModel<SettingsViewModel> m_settingsViewModel;
         
         [ObservableProperty]
+        private IViewModel<LibraryViewModel> m_libraryViewModel;
+        
+        [ObservableProperty]
         private View? m_selectedTab;
 
-        public TabViewViewModel(IViewModel<ActiveSessionsViewModel> activeSessionsViewModel, IViewModel<UsersViewModel> usersViewModel, IViewModel<SettingsViewModel> settingsViewModel)
+        public TabViewViewModel(IViewModel<ActiveSessionsViewModel> activeSessionsViewModel, IViewModel<UsersViewModel> usersViewModel, IViewModel<SettingsViewModel> settingsViewModel,
+            IViewModel<LibraryViewModel> libraryViewModel)
         {
             ActiveSessionsViewModel = activeSessionsViewModel;
             UsersViewModel = usersViewModel;
             SettingsViewModel = settingsViewModel;
+            LibraryViewModel = libraryViewModel;
         }
         
         public void OnNavigatedTo()

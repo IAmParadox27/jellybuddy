@@ -2,8 +2,38 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Jellybuddy.Pages.TabPages.LibraryTab">
+             xmlns:viewModels="clr-namespace:Jellybuddy.ViewModels"
+             xmlns:api="clr-namespace:Jellyfin.Api;assembly=Jellybuddy.Core"
+             xmlns:sf="http://schemas.syncfusion.com/maui/toolkit"
+             x:Class="Jellybuddy.Pages.TabPages.LibraryTab"
+             x:DataType="viewModels:LibraryViewModel">
     <ContentView.Content>
-        <Label Text="Library!" />
+        <sf:SfPullToRefresh IsRefreshing="{Binding IsRefreshing}" RefreshCommand="{Binding RefreshCommand}">
+            <sf:SfPullToRefresh.PullableContent>
+                <ScrollView Padding="10">
+                    <StackLayout Orientation="Vertical">
+                        <Label Text="Library" FontSize="28" FontAttributes="Bold" Margin="5" />
+                        <CollectionView ItemsSource="{Binding Libraries}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="api:VirtualFolderInfo">
+                                    <Border Margin="5,7.5" StrokeShape="RoundRectangle 15" StrokeThickness="0">
+                                        <StackLayout Orientation="Horizontal" BackgroundColor="Gray" Padding="5">
+                                            <Border StrokeShape="RoundRectangle 15" Margin="0,0,10,0">
+                                                <Image BackgroundColor="Black" WidthRequest="60" HeightRequest="60" />
+                                            </Border>
+                                            <StackLayout VerticalOptions="Center" Orientation="Vertical">
+                                                <Label FontSize="16" FontAttributes="Bold" Text="{Binding Name}" />                            
+                                                <Label FontSize="12" Text="{Binding CollectionType}" />
+                                                <Label FontSize="12" Text="Items: " />
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </ScrollView>
+            </sf:SfPullToRefresh.PullableContent>
+        </sf:SfPullToRefresh>
     </ContentView.Content>
 </ContentView>

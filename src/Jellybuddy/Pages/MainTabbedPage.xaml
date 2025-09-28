@@ -20,7 +20,7 @@
                     </sf:SfTabItem.ImageSource>
                 </sf:SfTabItem>
                 <sf:SfTabItem Header="Library" ImagePosition="Top">
-                    <tabPages:LibraryTab />
+                    <tabPages:LibraryTab BindingContext="{Binding LibraryViewModel.Model}" />
                     <sf:SfTabItem.ImageSource>
                         <FontImageSource Glyph="{icons:Material Icon={x:Static icons:MaterialIcons.LibraryBooks}}" />
                     </sf:SfTabItem.ImageSource>
